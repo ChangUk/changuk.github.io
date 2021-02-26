@@ -1,0 +1,64 @@
+.action {
+	color: $blue;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+table.spreadsheet {
+	tr {
+		counter-increment: var(--counterId);
+		&::before {
+			display: table-cell;
+			padding: ($spacing-unit / 3) ($spacing-unit / 2);
+			width: 1%;
+			font: 600 16px/1.6 $base-font-family;
+			text-align: right;
+			white-space: nowrap;
+			background-color: lighten($gray-light, 5%);
+			border: 1px solid darken($gray-light, 4%);
+			box-sizing: border-box;
+		}
+		th {
+			padding: 0 !important;
+
+			input.filter-combobox {
+				margin: 0;
+				padding: ($spacing-unit / 3) ($spacing-unit / 3);
+				width: 100%;
+				border: none;
+				background: transparent;
+				font: 600 16px/1.6 $base-font-family;
+				color: $text-color;
+				text-align: center;
+				box-sizing: border-box;
+
+				&::placeholder {
+					font: 600 16px/1.6 $base-font-family;
+					color: $text-color;
+					text-align: center;
+				}
+				&:focus {
+					&::placeholder { color: #7f7f7f; }
+				}
+			}
+		}
+	}
+	thead, tfoot {
+		tr::before {
+			content: '';
+			min-width: 50px;
+		}
+	}
+	tbody {
+		counter-reset: var(--counterId);
+		tr::before {
+			content: counter(var(--counterId));
+		}
+		td {
+			white-space: nowrap;
+		}
+	}
+}
