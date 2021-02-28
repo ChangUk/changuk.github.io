@@ -416,6 +416,9 @@ class DataRenderer {
 				e.target.dispatchEvent(new Event("change"));
 			}
 		});
+		combobox.addEventListener("keypress", (e) => {
+			e.stopPropagation();
+		});
 		combobox.addEventListener("change", (e) => {
 			var ssid = e.target.getAttribute("ssid");
 			var input = e.target.value;

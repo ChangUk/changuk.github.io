@@ -1,0 +1,157 @@
+---
+layout: default
+permalink: /function/uuidv4/
+---
+
+<div>
+	<div class="post-header">
+		<h1 class="post-title">Generate UUIDv4</h1>
+		<div class="post-meta">
+			<div class="post-meta-description">Generate and/or translate UUIDv4 string.</div>
+		</div>
+	</div>
+	<div class="post-content">
+		<h2>Generate New UUIDv4</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="center header fit-width">Options:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="checkbox" id="uuidv4-option-shorten" checked />
+						<label for="uuidv4-option-shorten" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">Shorten</label>
+						<input type="checkbox" id="uuidv4-option-remove-dashes" checked disabled />
+						<label for="uuidv4-option-remove-dashes" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">Remove Dashes</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width">UUID:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="uuidv4-generate-output" style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;" readonly>
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="uuidv4-generate-new">Generate New</button>
+						<button id="uuidv4-generate-reset">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>Translation</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="center header fit-width">Options:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="radio" id="uuidv4-option-def-hex" name="translation" value="def-to-hex" checked />
+						<label for="uuidv4-option-def-hex" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">DEF to HEX</label>
+						<input type="radio" id="uuidv4-option-hex-def" name="translation" value="hex-to-def" />
+						<label for="uuidv4-option-hex-def" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">HEX to DEF</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width">UUID:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="uuidv4-translate-input" style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;">
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width">Translated:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="uuidv4-translate-output" style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;" readonly>
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="uuidv4-translate">Translate</button>
+						<button id="uuidv4-translate-reset">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="module">
+import("/assets/lib/short-uuidv4/1.0.1/short-uuidv4.js")
+.then((mod) => {
+	let ShortUuidV4 = mod.ShortUuidV4;
+	let generator = new ShortUuidV4();
+
+	let optionShorten = document.querySelector("#uuidv4-option-shorten");
+	optionShorten.addEventListener("change", (e) => {
+		let optionRemoveDashes = document.querySelector("#uuidv4-option-remove-dashes");
+		optionRemoveDashes.disabled = e.target.checked;
+	});
+
+	let outputGen = document.querySelector("#uuidv4-generate-output");
+	outputGen.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+
+	let btnGenerateNew = document.querySelector("#uuidv4-generate-new");
+	btnGenerateNew.addEventListener("click", (e) => {
+		let uuid = generator.new();
+		let optionShorten = document.querySelector("#uuidv4-option-shorten").checked;
+		let optionRemoveDashes = document.querySelector("#uuidv4-option-remove-dashes").checked;
+		if (optionShorten) {
+			outputGen.value = uuid;
+		} else {
+			uuid = generator.translate(uuid);
+			outputGen.value = optionRemoveDashes ? uuid.replace(/-/g, '') : uuid;
+		}
+		navigator.clipboard.writeText(outputGen.value).then(() => {
+			// Do nothing
+		}, (e) => {
+			console.error("Could not copy text: ", e);
+		});
+	});
+	btnGenerateNew.click();
+
+	let btnResetGen = document.querySelector("#uuidv4-generate-reset");
+	btnResetGen.addEventListener("click", (e) => {
+		outputGen.value = "";
+	});
+
+	let inputTrans = document.querySelector("#uuidv4-translate-input");
+	inputTrans.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+	inputTrans.addEventListener("keypress", e => {
+		e.stopPropagation();
+	});
+	let outputTrans = document.querySelector("#uuidv4-translate-output");
+	outputTrans.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+
+	let btnTranslate = document.querySelector("#uuidv4-translate");
+	btnTranslate.addEventListener("click", (e) => {
+		let option = document.querySelector("input[name=translation]:checked").value;
+		let input = document.querySelector("#uuidv4-translate-input");
+		let output = document.querySelector("#uuidv4-translate-output");
+		let uuid = input.value.replace(/-/g, '');
+		if (option === "def-to-hex") {
+			if (uuid.length === 22)
+				output.value = generator.translate(uuid, ShortUuidV4.BASE_DEF, ShortUuidV4.BASE_HEX);
+			else
+				output.value = "Invalid input format!";
+		} else if (option === "hex-to-def") {
+			if (uuid.length === 32)
+				output.value = generator.translate(uuid, ShortUuidV4.BASE_HEX, ShortUuidV4.BASE_DEF);
+			else
+				output.value = "Invalid input format!";
+		}
+	});
+
+	let btnResetTrans = document.querySelector("#uuidv4-translate-reset");
+	btnResetTrans.addEventListener("click", (e) => {
+		inputTrans.value = "";
+		outputTrans.value = "";
+	});
+}).catch(e => {
+	console.error(e);
+});
+</script>

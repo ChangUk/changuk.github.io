@@ -24,94 +24,86 @@ Array.prototype.msort = function (options) {
 	return this;
 };
 
-// Auto focus on passphrase
-var inputPassphrase = document.querySelector("#input-passphrase");
-if (inputPassphrase) {
-	inputPassphrase.addEventListener("keypress", function (e) {
-		e.stopPropagation();
-	});
-	inputPassphrase.focus();
-}
-
 // Main
 var doc = document.querySelector(".page-content");
-
-// Render math equations
-doc.querySelectorAll("script[type='math/tex; mode=display']").forEach(function (el) {
-	el.outerHTML = katex.renderToString(el.textContent.replace(/%.*/g, ''), { displayMode: true });
-});
-renderMathInElement(doc, {
-	throwOnError: false,
-	delimiters: [
-		{ left: "$$", right: "$$", display: true },
-		{ left: "\\[", right: "\\]", display: true },
-		{ left: "$", right: "$", display: false },
-		{ left: "\\(", right: "\\)", display: false },
-	]
-});
-
-// Sequence diagrams
-doc.querySelectorAll(".language-seq").forEach(function (seq) {
-	var div = document.createElement("div");
-	seq.parentNode.parentNode.insertBefore(div, seq.parentNode);
-	Diagram.parse(seq.innerText).drawSVG(div, { theme: "simple" });
-	seq.parentNode.parentNode.removeChild(seq.parentNode);
-});
-
-// Flowchart
-doc.querySelectorAll(".language-flow").forEach(function (flow) {
-	var div = document.createElement("div");
-	flow.parentNode.parentNode.insertBefore(div, flow.parentNode);
-	flowchart.parse(flow.innerText).drawSVG(div, flowchartOptions);
-	flow.parentNode.parentNode.removeChild(flow.parentNode);
-});
-
-// Image alignment in paragraph
-doc.querySelectorAll("p").forEach(function (paragraph) {
-	if (paragraph.querySelectorAll("img").length) {
-		paragraph.classList.add("center");
-	}
-});
-
-// Add title to anchor tags
-doc.querySelectorAll("a").forEach(function (anchor) {
-	if (!anchor.hasAttribute("title")) {
-		if (anchor.parentNode.classList.contains("post-meta-category")) {
-			anchor.setAttribute("title", "category: " + anchor.innerHTML);
-		} else if (anchor.parentNode.classList.contains("post-meta-tags")) {
-			anchor.setAttribute("title", "tag: " + anchor.innerHTML.replace(/^#+/, ""));
-		} else {
-			anchor.setAttribute("title", anchor.href);
-		}
-		var current = window.location || window.document.location;
-		if (anchor.hostname !== current.hostname) {
-			anchor.setAttribute("target", "_blank");
-		}
-	}
-});
-
-// Add caption under the figure
-var images = doc.querySelectorAll("img");
-for (var i = 0; i < images.length; i++) {
-	images[i].addEventListener("click", function (e) {
-		window.open(this.src);
+if (doc) {
+	// Render math equations
+	doc.querySelectorAll("script[type='math/tex; mode=display']").forEach(function (el) {
+		el.outerHTML = katex.renderToString(el.textContent.replace(/%.*/g, ''), { displayMode: true });
 	});
-	var alt = images[i].getAttribute("alt");
-	if (alt) {
-		var figcaption = document.createElement("figcaption");
-		figcaption.innerHTML = alt;
-		images[i].parentNode.insertBefore(figcaption, images[i].nextSibling);
-	}
-}
+	renderMathInElement(doc, {
+		throwOnError: false,
+		delimiters: [
+			{ left: "$$", right: "$$", display: true },
+			{ left: "\\[", right: "\\]", display: true },
+			{ left: "$", right: "$", display: false },
+			{ left: "\\(", right: "\\)", display: false },
+		]
+	});
 
-// Add caption under the table
-var tables = doc.querySelectorAll("table");
-for (var i = 0; i < tables.length; i++) {
-	var alt = tables[i].getAttribute("alt");
-	if (alt) {
-		var tblcaption = document.createElement("tblcaption");
-		tblcaption.innerHTML = alt;
-		tables[i].parentNode.insertBefore(tblcaption, tables[i].nextSibling);
+	// Sequence diagrams
+	doc.querySelectorAll(".language-seq").forEach(function (seq) {
+		var div = document.createElement("div");
+		seq.parentNode.parentNode.insertBefore(div, seq.parentNode);
+		Diagram.parse(seq.innerText).drawSVG(div, { theme: "simple" });
+		seq.parentNode.parentNode.removeChild(seq.parentNode);
+	});
+
+	// Flowchart
+	doc.querySelectorAll(".language-flow").forEach(function (flow) {
+		var div = document.createElement("div");
+		flow.parentNode.parentNode.insertBefore(div, flow.parentNode);
+		flowchart.parse(flow.innerText).drawSVG(div, flowchartOptions);
+		flow.parentNode.parentNode.removeChild(flow.parentNode);
+	});
+
+	// Image alignment in paragraph
+	doc.querySelectorAll("p").forEach(function (paragraph) {
+		if (paragraph.querySelectorAll("img").length) {
+			paragraph.classList.add("center");
+		}
+	});
+
+	// Add title to anchor tags
+	doc.querySelectorAll("a").forEach(function (anchor) {
+		if (!anchor.hasAttribute("title")) {
+			if (anchor.parentNode.classList.contains("post-meta-category")) {
+				anchor.setAttribute("title", "category: " + anchor.innerHTML);
+			} else if (anchor.parentNode.classList.contains("post-meta-tags")) {
+				anchor.setAttribute("title", "tag: " + anchor.innerHTML.replace(/^#+/, ""));
+			} else {
+				anchor.setAttribute("title", anchor.href);
+			}
+			var current = window.location || window.document.location;
+			if (anchor.hostname !== current.hostname) {
+				anchor.setAttribute("target", "_blank");
+			}
+		}
+	});
+
+	// Add caption under the figure
+	var images = doc.querySelectorAll("img");
+	for (var i = 0; i < images.length; i++) {
+		images[i].addEventListener("click", function (e) {
+			window.open(this.src);
+		});
+		var alt = images[i].getAttribute("alt");
+		if (alt) {
+			var figcaption = document.createElement("figcaption");
+			figcaption.innerHTML = alt;
+			images[i].parentNode.insertBefore(figcaption, images[i].nextSibling);
+		}
+	}
+
+	// Add caption under the table
+	var tables = doc.querySelectorAll("table");
+	for (var i = 0; i < tables.length; i++) {
+		var alt = tables[i].getAttribute("alt");
+		if (alt) {
+			var tblcaption = document.createElement("caption");
+			tblcaption.innerHTML = alt;
+			tables[i].parentNode.insertBefore(tblcaption, tables[i].nextSibling);
+		}
 	}
 }
 

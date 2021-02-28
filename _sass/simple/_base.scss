@@ -36,7 +36,7 @@ blockquote > *:last-child {
 	margin-bottom: 0 !important;
 }
 
-label, button {
+label.button, button {
 	display: inline-block;
 	margin: 0 .1em;
 	padding: .4em .6em;
@@ -64,7 +64,7 @@ img {
 figure { margin: $spacing-unit 0; }
 figure > img { display: block; }
 
-figcaption, tblcaption {
+figcaption, caption {
 	display: block;
 	font-size: $small-font-size;
 	text-align: center;
@@ -77,7 +77,7 @@ figcaption::before {
 	font-size: $small-font-size;
 	font-weight: 600;
 }
-tblcaption::before {
+caption::before {
 	counter-increment: tbl;
 	content: "[Table "counter(tbl) "] ";
 	font-size: $small-font-size;
@@ -234,6 +234,7 @@ a.footnote:before {
 }
 
 textarea { font-family: consolas; }
+input { font: $base-font-weight #{$base-font-size}/#{$base-line-height} $base-font-family; }
 
 .hidden { display: none; }
 .monofont { font-family: consolas; }

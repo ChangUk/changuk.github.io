@@ -1,0 +1,95 @@
+---
+layout: default
+permalink: /function/json-encryption/
+---
+
+<div>
+	<div class="post-header">
+		<h1 class="post-title">JSON Data Encryption</h1>
+		<div class="post-meta">
+			<div class="post-meta-description">Convert JSON string into AES-256 encrypted data. The passphrase is used for encryption.</div>
+		</div>
+	</div>
+	<div class="post-content">
+		<table>
+			<tbody>
+				<tr>
+					<td class="center header fit-width">Input:<br />(JSON string)</td>
+					<td style="padding: 0; font-size: 0;">
+						<textarea id="json-encryption-input" style="width: 100%; height: 400px; overflow-y: scroll; resize: none; border: none; box-sizing: border-box; font-size: .9rem;" wrap="off"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width">Encryption Key:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="password" id="json-encryption-key" placeholder="Input encryption key..." style="padding: 7px; width: 100%; line-height: 1; border: none; box-sizing: border-box;">
+					</td>
+				</tr>
+				<tr>
+					<td class="center header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="json-encryption-download">Download Encrypted File</button>
+						<button id="json-encryption-reset">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="module">
+require([
+	"/assets/lib/crypto-js/4.0.0/crypto-js.js"
+], (CryptoJS) => {
+	let input = document.querySelector("#json-encryption-input");
+	input.addEventListener("keydown", (e) => {
+		if (e.key === "Tab") {
+			e.preventDefault();
+			var start = e.target.selectionStart;
+			var end = e.target.selectionEnd;
+			e.target.value = e.target.value.substring(0, start) + "\t" + e.target.value.substring(end);
+			e.target.selectionStart = e.target.selectionEnd = start + 1;
+		}
+	});
+	input.addEventListener("keypress", (e) => {
+		e.stopPropagation();
+	});
+	input.focus();
+
+	let inputKey = document.querySelector("#json-encryption-key");
+	inputKey.addEventListener("keypress", (e) => {
+		e.stopPropagation();
+	});
+	let cryptoKey = sessionStorage.getItem("passphrase");
+	inputKey.value = cryptoKey ? cryptoKey : "";
+
+	let btnDownload = document.querySelector("#json-encryption-download");
+	btnDownload.addEventListener("click", e => {
+		try {
+			var input = document.querySelector("#json-encryption-input");
+			let inputKey = document.querySelector("#json-encryption-key");
+			var parsed = JSON.parse(input.value);
+			var minified = JSON.stringify(parsed);
+			var encrypted = CryptoJS.AES.encrypt(minified, inputKey.value).toString();
+			var blob = new Blob([encrypted], { type: "text/plain; charset=utf-8" });
+			var blobUrl = URL.createObjectURL(blob);
+			var a = document.createElement("a");
+			a.href = blobUrl;
+			a.download = "data.txt";
+			a.click();
+			URL.revokeObjectURL(blobUrl);
+		} catch (e) {
+			alert(e);
+		}
+	});
+
+	var btnReset = document.querySelector("#json-encryption-reset");
+	btnReset.addEventListener("click", e => {
+		let input = document.querySelector("#json-encryption-input");
+		input.value = "";
+		input.focus();
+		let inputKey = document.querySelector("#json-encryption-key");
+		inputKey.value = "";
+	});
+});
+</script>
