@@ -34,80 +34,10 @@
 	<!-- Require.js -->
 	<script src="{{ "/assets/lib/require/2.3.6/require.min.js" | relative_url }}"></script>
 
-	<!-- Simple Jekyll Search -->
-	<script src="{{ "/assets/lib/simple-jekyll-search/1.7.13/simple-jekyll-search.min.js" | relative_url }}"></script>
-
-	<!-- Common scripts -->
-	<script src="{{ "/assets/common.js" | relative_url }}"></script>
-
 	<!-- Data viewer -->
 	<script src="{{ "/assets/dataviewer.js" | relative_url }}"></script>
 
-	<!-- Embedded script -->
-	<script type="text/javascript">
-		window.addEventListener("DOMContentLoaded", function() {
-			var template = `<li>
-				<div class="post-meta">
-					<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{date}</time>{category}
-				</div>
-				<h3><a class="post-link" href="{url}">{title}</a></h3>
-			</li>`;
-			SimpleJekyllSearch({
-				searchInput: document.querySelector("#search-input"),
-				resultsContainer: document.querySelector("#search-result"),
-				json: "{{ site.baseurl }}/search.json",
-				searchResultTemplate: template,
-				noResultsText: "No results found.",
-				fuzzy: false,
-				exclude: ["Welcome"]
-			});
-
-			var searchInput = document.querySelector("#search-input");
-			searchInput.addEventListener("keydown", function (e) {
-				if (e.which === 13) {
-					if (this.value.toLowerCase() === "private")
-						window.location = "{{ "/" | relative_url }}" + this.value;
-				} else if (e.which === 27) this.value = "";
-			})
-			searchInput.focus();
-			document.addEventListener("keypress", function () {
-				if (document.activeElement.tagName == "BODY") {
-					document.querySelector("#search-input").focus();
-				}
-			});
-			document.addEventListener("keyup", function (e) {
-				if (searchInput.value.length) {
-					this.querySelector("main").classList.add("hidden");
-					this.querySelector("result").classList.remove("hidden");
-				} else {
-					this.querySelector("main").classList.remove("hidden");
-					this.querySelector("result").classList.add("hidden");
-				}
-			}, false);
-
-			if (searchInput.value.length && sessionStorage.searchdata) {
-				document.querySelector("#search-result").innerHTML = sessionStorage.searchdata;
-				document.querySelector("main").classList.add("hidden");
-				document.querySelector("result").classList.remove("hidden");
-				searchInput.setSelectionRange(0, searchInput.value.length);
-			}
-
-			if (document.querySelector("#groupby")) {
-				// Warning: do not use `element.classList.remove("hidden")` instead of `element.style.display`;
-				var categoryValue = "category-" + new URL(document.URL).searchParams.get("category");
-				if (document.getElementById(categoryValue))
-					document.getElementById(categoryValue).style.display = "block";
-				var tagValue = "tag-" + new URL(document.URL).searchParams.get("tag");
-				if (document.getElementById(tagValue))
-					document.getElementById(tagValue).style.display = "block";
-				
-				if (!document.getElementById(categoryValue) && !document.getElementById(tagValue))
-					window.location.href = "{{ site.baseurl }}/404.html";
-			}
-
-			// Auto focus on passphrase
-			var inputPassphrase = document.querySelector("#input-passphrase");
-			if (inputPassphrase) inputPassphrase.focus();
-		});
-	</script>
+	<!-- Main scripts -->
+	<script type="module" src="{{ "/assets/lib/simple-jekyll-search/search.mjs" | relative_url }}"></script>
+	<script type="module" src="{{ "/assets/main.mjs" | relative_url }}"></script>
 </head>

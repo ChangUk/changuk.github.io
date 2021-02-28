@@ -420,7 +420,7 @@ function signout(msg, shake = false) {
 	var el = document.querySelector("#auth-message");
 	if (msg && typeof msg === "string") {
 		el.innerHTML = msg;
-		if (shake) shakeElement(el, 30, 3);
+		if (shake) ShakeElement(el, 30, 3);
 	} else el.innerHTML = "";
 }
 function authenticated() {
