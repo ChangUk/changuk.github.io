@@ -99,11 +99,10 @@ require([
 
 	var btnReset = document.querySelector("#file-encryption-reset");
 	btnReset.addEventListener("click", e => {
-		let input = document.querySelector("#file-encryption-input-file");
-		input.value = "";
-		input.focus();
-		let inputKey = document.querySelector("#file-encryption-key");
-		inputKey.value = "";
+		document.querySelector("#file-encryption-input-file").value = "";
+		document.querySelector("#file-encryption-input-label").innerHTML = "Select a file...";
+		document.querySelector("#file-encryption-input-type").innerHTML = "";
+		document.querySelector("#file-encryption-key").value = "";
 	});
 });
 </script>
