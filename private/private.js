@@ -68,6 +68,17 @@ let LoadingOverlay = (function () {
 document.addEventListener("DOMContentLoaded", function () {// Initialize modules
 	if (!LoadingOverlay.init(document.querySelector("#overlay-loading"))) return;
 	Renderer = new DataRenderer(document.querySelector("#private-content"));
+	Renderer.setContentCallback(function () {
+		renderMathInElement(document.querySelector("#private-content"), {
+			throwOnError: false,
+			delimiters: [
+				{ left: "$$", right: "$$", display: true },
+				{ left: "\\[", right: "\\]", display: true },
+				{ left: "$", right: "$", display: false },
+				{ left: "\\(", right: "\\)", display: false },
+			]
+		});
+	});
 
 	// Auto focus on passphrase
 	var inputPassphrase = document.querySelector("#input-passphrase");
@@ -357,9 +368,9 @@ function inspectData(data) {
 		function getElId(el) {
 			if (!el) return;
 			var id = el.id;
-			if (id && /^uuid-[a-f0-9]{32}/.exec(id)) {
-				var match = id.replace(/^uuid-/g, "").match(/\b[a-f0-9]{32}\b/);
-				if (match && match[0]) console.log(match[0], data[match[0]]);
+			if (id && /^uuid-[a-zA-Z0-9]{22}/.exec(id)) {
+				var match = id.replace(/^uuid-/g, "").match(/\b[a-zA-Z0-9]{22}\b/);
+				if (match && match[0]) console.log(`--- Current entity: "${match[0]}"`, data[match[0]]);
 				else getElId(el.parentNode);
 			} else getElId(el.parentNode);
 		}
@@ -368,7 +379,7 @@ function inspectData(data) {
 
 	// TEST #2: Set reference counts for each data items
 	let reference = (parent, id) => {
-		if (!id || id.length !== 32) return;
+		if (!id || id.length !== 22) return;
 		if (data.hasOwnProperty(id)) {
 			var obj = data[id];
 			if (!obj.hasOwnProperty("parents")) obj.parents = [];
@@ -384,7 +395,7 @@ function inspectData(data) {
 				reference(id, obj.properties);
 			if (obj.action && typeof obj.action === "object")
 				Object.keys(obj.action).forEach((key) => { reference(id, obj.action[key]); });
-		} else console.log("--- Broken pointer: parent('" + parent + "') -> target('" + id + "')");
+		} else console.log(`--- Broken pointer: parent("${parent}") -> target("${id}")"`);
 	}
 	reference(null, ENTRY);
 
@@ -404,13 +415,13 @@ function inspectData(data) {
 		multiRefs.forEach((obj, order) => {
 			var item = data[obj.id];
 			if (item.type !== "action" && item.type !== "spreadsheetProp" && item.type !== "tableProp")
-				console.log(obj.id, item);
+				console.log(`"${obj.id}"`, item);
 		});
 	}
 	if (Object.keys(standalone).length) {
 		console.log("--- Standalone objects: ");
 		for (const [id, obj] of Object.entries(standalone))
-			console.log(id, obj);
+			console.log(`"${id}"`, obj);
 	}
 }
 

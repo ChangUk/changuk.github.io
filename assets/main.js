@@ -24,13 +24,15 @@ Array.prototype.msort = function (options) {
 	return this;
 };
 
-// Main
+// Transform contents
 var doc = document.querySelector(".page-content");
 if (doc) {
-	// Render math equations
+	// Render math equations in table-of-content
 	doc.querySelectorAll("script[type='math/tex; mode=display']").forEach(function (el) {
 		el.outerHTML = katex.renderToString(el.textContent.replace(/%.*/g, ''), { displayMode: true });
 	});
+
+	// Render math equations automatically
 	renderMathInElement(doc, {
 		throwOnError: false,
 		delimiters: [

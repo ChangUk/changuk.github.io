@@ -5,6 +5,7 @@ class DataRenderer {
 		this.data = {};
 		this.headings = [];
 		this.extra = {};
+		this.contentCallback = undefined;
 	}
 
 	setData(data) {
@@ -57,19 +58,21 @@ class DataRenderer {
 		}
 	}
 
-	paragraph(parent, id) {
+	setContentCallback(fn) {
+		if (typeof fn === "function") this.contentCallback = fn;
+	}
+
+	paragraph(parent, id, callback) {
 		var p = document.createElement("p");
 		p.id = "uuid-" + id;
 		p.innerHTML = this.data[id].content;
 		parent.appendChild(p);
-		if (this.data[id].children) {
-			this.data[id].children.forEach((childId) => {
-				this[this.data[childId].type](p, childId);
-			});
-		}
+
+		if (callback) callback();
+		if (this.contentCallback) this.contentCallback();
 	}
 
-	table(parent, id) {
+	table(parent, id, callback) {
 		var tableObj = this.data[id];
 		var properties = (tableObj.properties && this.data[tableObj.properties].content) ? this.data[tableObj.properties].content : {};
 		if (!this.extra.hasOwnProperty(id)) {
@@ -89,6 +92,9 @@ class DataRenderer {
 		if (tableObj.content && tableObj.content.footer) {
 			this.tableFooter(id, table, tableObj.content.footer);
 		}
+
+		if (callback) callback();
+		if (this.contentCallback) this.contentCallback();
 	}
 
 	tableHeader(tid, parent, id) {
@@ -160,6 +166,7 @@ class DataRenderer {
 
 	tableBody(tid, parent, id) {
 		var tbody = document.createElement("tbody");
+		tbody.id = "uuid-" + id;
 		parent.appendChild(tbody);
 		const getHeaderDepth = (id) => {
 			if (this.data[id].children) {
@@ -193,6 +200,7 @@ class DataRenderer {
 
 		var td = document.createElement("td");
 		td.id = "uuid-" + id;
+		if (this.data[id].hasOwnProperty("title")) td.setAttribute("title", this.data[id].title);
 		td.innerHTML = this.data[id].content;
 		td.classList.add("header");
 		tbody.children[row].appendChild(td);
@@ -231,6 +239,7 @@ class DataRenderer {
 	tableRow(tid, tbody, id, depth, row, col, isFirstChild) {
 		if (!isFirstChild) {
 			var tr = document.createElement("tr");
+			tr.id = "uuid-" + id;
 			tbody.appendChild(tr);
 		}
 
@@ -257,6 +266,7 @@ class DataRenderer {
 			td.prepend(highlight);
 		} else td.innerHTML = this.data[id].content;
 
+		if (this.data[id].hasOwnProperty("title")) td.setAttribute("title", this.data[id].title);
 		td.setAttribute("row", row);
 		td.setAttribute("col", col);
 
@@ -288,7 +298,7 @@ class DataRenderer {
 		});
 	}
 
-	spreadsheet(parent, id) {
+	spreadsheet(parent, id, callback) {
 		var ssObj = this.data[id];
 		if (!ssObj.content.header || !ssObj.content.body) return;
 
@@ -362,6 +372,9 @@ class DataRenderer {
 		if (ssObj.content && ssObj.content.header) {
 			this.spreadsheetHeader(id, table, ssObj.content.header);
 		}
+
+		if (callback) callback();
+		if (this.contentCallback) this.contentCallback();
 	}
 
 	spreadsheetHeader(ssid, parent, id) {
@@ -635,12 +648,13 @@ class DataRenderer {
 			});
 
 			// Update footer's value
+			td.setAttribute("data-before", contentType);
 			if (contentType === "variety" && statsValue.length) {
-				td.innerHTML = statsValue.length.toLocaleString() + (statsValue.length === 1 ? " value" : " values");
+				td.innerHTML = statsValue.length.toLocaleString();
 			} else if (contentType === "total") {
-				td.innerHTML = "Total: " + statsValue.toLocaleString();
+				td.innerHTML = statsValue.toLocaleString();
 			} else if (contentType === "count") {
-				td.innerHTML = "Count: " + statsValue.toLocaleString();
+				td.innerHTML = statsValue.toLocaleString();
 			} else statsValue = "";
 		}
 	}

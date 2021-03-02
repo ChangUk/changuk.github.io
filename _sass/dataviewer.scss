@@ -61,4 +61,15 @@ table.spreadsheet {
 			white-space: nowrap;
 		}
 	}
+	tfoot {
+		td {
+			line-height: 1.2;
+			&::before {
+				content: attr(data-before);
+				display: block;
+				font-size: .7rem;
+				text-transform: uppercase;
+			}
+		}
+	}
 }
