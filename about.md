@@ -16,7 +16,3 @@ ChangUk, Park
 ## Purpose of Blog
 
 For quick referencing my materials and programming snippets.
-
----
-
-Copyright &#169; 2021 by ChangUk, Park.

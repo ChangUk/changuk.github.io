@@ -24,18 +24,20 @@ require([
 		}
 	}/*, DEBOUNCE_TIME);*/
 
-	var searchInput = document.querySelector("#search-input");
+	let searchInput = document.querySelector("#search-input");
 	searchInput.addEventListener("keydown", (e) => {
 		if (e.key === "Enter") {
 			let matches = e.target.value.match(/^\/.+/g);
 			if (matches) {
-				let funcName = e.target.value.toLowerCase().replace(/^\/+/, '');
-				import(`/functions/${funcName}/index.mjs`)
-				.then(mod => {
-					e.target.value = "";
-					mod.default();
-				}).catch(e => {
-				});
+				const funcName = e.target.value.toLowerCase().replace(/^\/+/, '');
+				const funcPath = `/functions/${funcName}/index.mjs`;
+				import(funcPath)
+					.then(mod => {
+						e.target.value = "";
+						mod.default();
+					}).catch(err => {
+						e.target.value = "";
+					});
 			}
 		} else if (e.key === "Escape") {
 			e.target.value = "";
@@ -57,13 +59,13 @@ require([
 
 	if (document.querySelector("#groupby")) {
 		// Warning: do not use `element.classList.remove("hidden")` instead of `element.style.display`;
-		var categoryValue = "category-" + new URL(document.URL).searchParams.get("category");
+		let categoryValue = "category-" + new URL(document.URL).searchParams.get("category");
 		if (document.getElementById(categoryValue))
 			document.getElementById(categoryValue).style.display = "block";
-		var tagValue = "tag-" + new URL(document.URL).searchParams.get("tag");
+		let tagValue = "tag-" + new URL(document.URL).searchParams.get("tag");
 		if (document.getElementById(tagValue))
 			document.getElementById(tagValue).style.display = "block";
-	
+
 		if (!document.getElementById(categoryValue) && !document.getElementById(tagValue))
 			window.location.href = "/404.html";
 	}

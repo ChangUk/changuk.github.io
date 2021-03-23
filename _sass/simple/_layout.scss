@@ -10,7 +10,18 @@ header {
 	border-bottom: 1px solid #ddd;
 }
 
-content { display: block; }
+content {
+	display: block;
+	background: #fff;
+}
+
+footer {
+	padding-top: $spacing-unit;
+	height: 150px;
+	user-select: none;
+	background: #f7f7f7;
+	border-top: 1px solid #ddd;
+}
 
 .wrapper {
 	max-width: calc(#{$content-width} - (#{$spacing-unit} * 2));

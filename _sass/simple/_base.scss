@@ -3,7 +3,7 @@ body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, hr, dl, dd, ol, ul, figure { m
 
 body {
 	font: $base-font-weight #{$base-font-size}/#{$base-line-height} $base-font-family;
-	overflow-y: scroll;
+	overflow: auto;
 	color: $text-color;
 	background-color: $background-color;
 	font-kerning: normal;
