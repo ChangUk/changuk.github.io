@@ -35,7 +35,7 @@ function resetTimer() {
 	sessionStorage.setItem("expire", Date.now() + SESSION_TIME);
 }
 
-let uuid = (quotation = false) => {
+export let uuidv4 = (quotation = false) => {
 	let newUuid = new ShortUuidV4().new();
 	return quotation ? `"${newUuid}"` : newUuid;
 };
@@ -192,7 +192,7 @@ export function signout(msg, shake = false) {
 
 	sessionStorage.removeItem("passphrase");
 	sessionStorage.removeItem("expire");
-
+	
 	resetViewport();
 	privateData = null;
 
@@ -252,18 +252,8 @@ const ArticleHierarchy = {
 		type: "dropdown"
 	},
 	"6FxlCPMSwO8JrVaWKxXSuW": {
-		children: ["1ewJiu584aoXoT6OEWfjNd", "2H4V5yUg7DMUDTw75QHyyw"],
+		children: ["2H4V5yUg7DMUDTw75QHyyw"],
 		type: "wrapper"
-	},
-	"1ewJiu584aoXoT6OEWfjNd": {
-		children: ["2NjN1AYalGHhU8E59sxAMZ"],
-		title: "Settings",
-		type: "dropdown"
-	},
-	"2NjN1AYalGHhU8E59sxAMZ": {
-		action: "exportData",
-		title: "Export Data as File",
-		type: "action"
 	},
 	"2H4V5yUg7DMUDTw75QHyyw": {
 		action: "signout",
@@ -429,7 +419,7 @@ function action(id) {
 	}
 }
 
-function exportData() {
+export function exportData() {
 	let deepCopied = JSON.parse(JSON.stringify(privateData));
 	for (const [id, entity] of Object.entries(deepCopied)) {
 		for (const key of Object.keys(entity)) {

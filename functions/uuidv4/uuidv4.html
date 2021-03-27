@@ -102,11 +102,6 @@ import("/assets/lib/short-uuidv4/1.0.1/short-uuidv4.js")
 			uuid = generator.translate(uuid);
 			outputGen.value = optionRemoveDashes ? uuid.replace(/-/g, '') : uuid;
 		}
-		navigator.clipboard.writeText(outputGen.value).then(() => {
-			// Do nothing
-		}, (e) => {
-			console.error("Could not copy text: ", e);
-		});
 	});
 	btnGenerateNew.click();
 
