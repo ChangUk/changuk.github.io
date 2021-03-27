@@ -12,13 +12,14 @@ header {
 
 content {
 	display: block;
+	padding-bottom: $spacing-unit;
 	background: #fff;
 }
 
 footer {
 	padding-top: $spacing-unit;
 	height: 150px;
-	user-select: none;
+	box-sizing: border-box;
 	background: #f7f7f7;
 	border-top: 1px solid #ddd;
 }

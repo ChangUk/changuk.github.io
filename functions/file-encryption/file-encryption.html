@@ -178,7 +178,7 @@ import("/assets/lib/crypto-es/1.2.6/index.js").then((mod) => {
 		const decrypt = file => new Promise((resolve, reject) => {
 			const reader = new FileReader();
 			reader.onload = (e) => {
-				let decrypted = CryptoES.AES.decrypt(e.target.result, encInputKey.value);
+				let decrypted = CryptoES.AES.decrypt(e.target.result, decInputKey.value);
 				resolve(decrypted);
 			}
 			reader.onerror = (e) => reject(e);
