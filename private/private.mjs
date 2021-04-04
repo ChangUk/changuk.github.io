@@ -207,6 +207,7 @@ export function signout(msg, shake = false) {
 	} else el.innerHTML = "";
 }
 function authenticated() {
+	console.log("Authenticated!");
 	entryWrapper.classList.add("hidden");
 	privateWrapper.classList.remove("hidden");
 }
