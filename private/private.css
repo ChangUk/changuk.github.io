@@ -23,22 +23,22 @@ body { background: #1e1e1e; }
 div.private-manager-control-wrapper { display: flex; margin: .2em 0; }
 
 #private-manager fieldset { border: solid 1px #383838; margin-bottom: 1.6em; }
-#private-manager fieldset legend {
-    font-family: consolas;
-    text-transform: uppercase; color: #888; user-select: none;
-}
-#private-manager fieldset>div { margin-bottom: .5em; }
+#private-manager fieldset legend { font-family: consolas; text-transform: uppercase; color: #888; user-select: none; }
+#private-manager fieldset>div { margin-bottom: .5em; line-height: 1; }
 #private-manager fieldset>div:last-child { margin-bottom: 0; }
+#private-manager fieldset>div > label { display: block; margin-bottom: .2em; }
 
 #private-manager input[type="text"] {
-    padding: 2px; width: 100%; border: none; box-sizing: border-box;
+    display: block; padding: 2px; width: 100%; border: none; box-sizing: border-box;
     font-family: consolas; background: #383838; color: #f7f7f7; font-size: .8rem;
 }
 
 #private-manager textarea {
-    width: 100%; min-height: 200px; overflow: auto; border: none; resize: vertical; box-sizing: border-box;
+    display: block; margin: 0; width: 100%; overflow: auto; border: none; resize: vertical; box-sizing: border-box;
     font-family: consolas; background: #383838; color: #f7f7f7; font-size: .8rem; cursor: inherit;
 }
+
+.invalid-value { background: #8c2323 !important; }
 
 #private-manager button {
 	display: inline-block; margin: 0 .1em; padding: .4em .6em;
@@ -48,7 +48,7 @@ div.private-manager-control-wrapper { display: flex; margin: .2em 0; }
 	white-space: nowrap; user-select: none;
 }
 div.private-manager-control-wrapper button { padding: .3em .5em !important; }
-#private-manager button:hover { color: #f7f7f7; background-color: #484848; }
+#private-manager button:hover { color: #f7f7f7; background-color: #444; }
 #private-manager button:active { box-shadow: none; transform: translateY(1px); }
 
 #private-page {

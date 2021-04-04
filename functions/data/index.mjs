@@ -16,6 +16,7 @@ export default function () {
 		if (privatePage.classList.contains("open-manager")) privatePage.classList.remove("open-manager");
 		else privatePage.classList.add("open-manager");
 		document.querySelector("#search-input").focus();
+
 		if (initialized) return;
 
 		import("/private/private.mjs").then(({ sectional }) => {
@@ -59,49 +60,142 @@ export default function () {
 					if (result) exportData();
 				});
 			}
-			{
-				const newUuid = document.querySelector("#id-5nbkkGt7ynI5Oo1NcBH6FJ");
-				newUuid.addEventListener("focus", e => {
-					e.target.select();
-				});
-				const btnGenerateNew = document.querySelector("#id-0W4rZ284okFhNi3wEwsRdO");
-				btnGenerateNew.addEventListener("click", e => {
-					const input = document.querySelector("#id-5nbkkGt7ynI5Oo1NcBH6FJ");
-					input.value = uuid();
-				});
-				btnGenerateNew.click();
-				const btnCopyToClipboard = document.querySelector("#id-0Cv5QSHRMtLp05bV0WAHoF");
-				btnCopyToClipboard.addEventListener("click", e => {
-					const input = document.querySelector("#id-5nbkkGt7ynI5Oo1NcBH6FJ");
-					navigator.clipboard.writeText(input.value).then(() => {
-						// Do nothing
-					}, (e) => {
-						console.error("Could not copy text: ", e);
-					});
-				});
-			}
-			{
-				const curEntityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
-				curEntityId.addEventListener("keydown", (e) => {
+			{ // Entity Editor
+				const checkIdFormat = (value) => {
+					const input = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+					if (/^[a-zA-Z0-9]{22}$/.exec(value) || !value.length) {
+						input.classList.remove("invalid-value");
+						return true;
+					} else {
+						input.classList.add("invalid-value");
+						return false;
+					}
+				}
+				const checkEntityContent = (value) => {
+					const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+					if (!value.length) {
+						entityContent.classList.remove("invalid-value");
+						return true;
+					}
+					try {
+						JSON.parse(value);
+						entityContent.classList.remove("invalid-value");
+						return true;
+					} catch (err) {
+						entityContent.classList.add("invalid-value");
+						return false;
+					}
+				}
+
+				const entityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+				entityId.addEventListener("keydown", (e) => {
 					e.stopPropagation();
 					if (e.key === "Escape") { e.target.value = ""; }
 				});
-				curEntityId.addEventListener("keypress", (e) => {
+				entityId.addEventListener("keypress", (e) => {
 					// Prevent from auto focusing on search input
 					e.stopPropagation();
 				});
-				curEntityId.addEventListener("focus", e => {
+				entityId.addEventListener("focus", (e) => {
 					e.target.select();
 				});
-				curEntityId.addEventListener("change", (e) => {
-					const entityView = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+				entityId.addEventListener("input", (e) => {
+					checkIdFormat(e.target.value);
+				});
+				entityId.addEventListener("change", (e) => {
+					checkIdFormat(e.target.value);
+					const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
 					let entity = sectional.getEntity(e.target.value);
 					if (entity && e.target.value.length === 22) {
-						entityView.value = JSON.stringify(entity, null, 4);
-					} else entityView.value = "";
+						const ordered = Object.keys(entity).sort().reduce(
+							(obj, key) => {
+								obj[key] = entity[key];
+								return obj;
+							},
+							{}
+						);
+						entityContent.value = JSON.stringify(ordered, null, 4);
+					} else entityContent.value = "";
+					entityContent.dispatchEvent(new Event("change"));
+				});
+
+				const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+				entityContent.addEventListener("keydown", (e) => {
+					e.stopPropagation();
+				});
+				entityContent.addEventListener("keypress", (e) => {
+					e.stopPropagation();
+				});
+				entityContent.addEventListener("input", (e) => {
+					e.stopPropagation();
+				});
+				entityContent.addEventListener("change", (e) => {
+					checkEntityContent(e.target.value);
+				});
+
+				const btnReset = document.querySelector("#id-3F5CVe3tnFadXKSNxNDJYA");
+				btnReset.addEventListener("click", (e) => {
+					const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+					curId.value = "";
+					curId.dispatchEvent(new Event("change"));
+				});
+
+				const btnNewId = document.querySelector("#id-0W4rZ284okFhNi3wEwsRdO");
+				btnNewId.addEventListener("click", e => {
+					const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+					curId.value = uuid();
+				});
+
+				const btnSave = document.querySelector("#id-2QEfF3VjOq5mStkqEMaFRO");
+				btnSave.addEventListener("click", (e) => {
+					const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+					if (!checkIdFormat(curId.value)) {
+						alert("Invalid Entity ID format!");
+						return;
+					}
+					const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+					if (!checkEntityContent(entityContent.value)) {
+						alert("Invalid JSON format!");
+						return;
+					}
+					if (curId.value.length && entityContent.value.length) {
+						let res = false;
+						if (sectional.getEntity(curId.value)) res = confirm("The given entity ID is existing.\nAre you sure to overwrite?");
+						else res = confirm("Are you sure to save entity?");
+						if (res) {
+							try {
+								let result = sectional.setEntity(curId.value, JSON.parse(entityContent.value));
+								if (result) alert("Successfully saved!");
+								else alert("Failed to save entity!");
+							} catch (err) {
+								alert(`Failed to save entity: ${err}`);
+							}
+						}
+					}
+				});
+
+				const btnRemove = document.querySelector("#id-1Q5TS3PdxDME4YF92Rayl0");
+				btnRemove.addEventListener("click", (e) => {
+					const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+					if (!checkIdFormat(curId.value)) {
+						alert("Invalid Entity ID format!");
+						return;
+					}
+					if (curId.value.length) {
+						if (sectional.getEntity(curId.value)) {
+							if (confirm("Are you sure to delete entity?")) {
+								let result = sectional.removeEntity(curId.value);
+								if (result) alert("Successfully removed!");
+								else alert("Failed to remove entity!");
+							}
+						} else {
+							alert("Not found the given entity ID!");
+							return;
+						}
+					}
 				});
 			}
-			{
+			{ // Entity Template
 				const combobox = document.querySelector("#id-6kYDDAzRbke7m1Rb1Rvqkp");
 				combobox.addEventListener("keydown", (e) => {
 					e.stopPropagation();
@@ -119,8 +213,35 @@ export default function () {
 				});
 				combobox.addEventListener("change", (e) => {
 					if (!e.target.value) return;
-					let templateView = document.querySelector("#id-1Stir8sO6QnPpV8xcyimeG");
-					templateView.value = `${uuid(true)}: ${JSON.stringify(Entity.Template(e.target.value), null, 4)}`;
+					const textarea = document.querySelector("#id-1Stir8sO6QnPpV8xcyimeG");
+					let template = Entity.Template(e.target.value);
+					const ordered = Object.keys(template).sort().reduce(
+						(obj, key) => {
+							obj[key] = template[key];
+							return obj;
+						},
+						{}
+					);
+					textarea.value = JSON.stringify(ordered, null, 4);
+				});
+
+				const btnReset = document.querySelector("#id-3597Oai8C2I4bKXVQShv50");
+				btnReset.addEventListener("click", (e) => {
+					const combobox = document.querySelector("#id-6kYDDAzRbke7m1Rb1Rvqkp");
+					combobox.value = "";
+					combobox.dispatchEvent(new Event("change"));
+					const template = document.querySelector("#id-1Stir8sO6QnPpV8xcyimeG");
+					template.value = "";
+				});
+
+				const btnCopyTemplate = document.querySelector("#id-5sBvAZMWtngtuHx0SPEwKM");
+				btnCopyTemplate.addEventListener("click", (e) => {
+					const template = document.querySelector("#id-1Stir8sO6QnPpV8xcyimeG");
+					navigator.clipboard.writeText(template.value).then(() => {
+						// Do nothing
+					}, (e) => {
+						console.error("Could not copy text: ", e);
+					});
 				});
 			}
 		}).catch(e => {

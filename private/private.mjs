@@ -213,14 +213,19 @@ function authenticated() {
 export function checkSession() {
 	try {
 		let expire = parseInt(sessionStorage.getItem("expire"));
-		return sessionStorage.getItem("passphrase") && Date.now() < expire;
+		let result = sessionStorage.getItem("passphrase") && Date.now() < expire;
+		if (!result) {
+			sessionStorage.removeItem("passphrase");
+			sessionStorage.removeItem("expire");
+		}
+		return result;
 	} catch {
 		return false;
 	}
 }
 
 const ArticleHierarchy = {
-	"0000000000000000000000": {
+	"root": {
 		children: ["7ulAuUNKXvMPStr5o16gbh", "6FxlCPMSwO8JrVaWKxXSuW"],
 		type: "entry"
 	},
@@ -267,7 +272,7 @@ function loadData(data) {
 	if (DEBUG) inspectData(data);
 
 	sectional = new Sectional(contentWrapper, data, {
-		insertLayouts: false,
+		insertSections: false,
 		callback: (el, ...params) => {
 			// Translate markdown syntax
 			let markdown = new Remarkable("commonmark", {});
@@ -292,14 +297,15 @@ function loadData(data) {
 					{ left: "\\[", right: "\\]", display: true }
 				]
 			});
-		}
+		},
+		entry: "0000000000000000000000"
 	});
 
 	// Reset viewport
 	resetViewport();
 
 	// Render contents
-	let root = ArticleHierarchy[Sectional.ENTRY];
+	let root = ArticleHierarchy["root"];
 	root.children.forEach((menuWrapperId) => {
 		if (!menuWrapperId) return;
 
@@ -460,7 +466,7 @@ function inspectData(data) {
 
 		} else console.log(`--- Broken pointer: parent("${parent}") -> target("${id}")"`);
 	}
-	reference(null, Sectional.ENTRY);
+	reference(null, Sectional.getEntry());
 
 	// TEST #2: Check if invalid data exists and get parent object
 	let multiRefs = [];
