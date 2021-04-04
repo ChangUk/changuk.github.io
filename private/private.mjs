@@ -213,12 +213,7 @@ function authenticated() {
 export function checkSession() {
 	try {
 		let expire = parseInt(sessionStorage.getItem("expire"));
-		let result = sessionStorage.getItem("passphrase") && Date.now() < expire;
-		if (!result) {
-			sessionStorage.removeItem("passphrase");
-			sessionStorage.removeItem("expire");
-		}
-		return result;
+		return sessionStorage.getItem("passphrase") && Date.now() < expire;
 	} catch {
 		return false;
 	}
