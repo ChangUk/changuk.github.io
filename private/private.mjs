@@ -143,7 +143,10 @@ function auth(passphrase) {
 
 			// Loading private data
 			fetch(DEBUG ? "/private/data.json" : "/private/data.txt").then(response => {
-				if (response.ok) return response.text();
+				if (response.ok) {
+					console.log("Successfully loaded private data!");
+					return response.text();
+				}
 				return {};
 			}).then(data => {
 				try {
