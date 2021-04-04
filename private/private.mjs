@@ -60,8 +60,8 @@ class LoadingOverlay {
 		this.timer = setInterval(() => {
 			if (!this._display) {
 				this.el.style.setProperty("display", "none");
-				clearInterval(this.timer);
 				if (this.callback) this.callback();
+				clearInterval(this.timer);
 			}
 		}, 1000);
 	}
