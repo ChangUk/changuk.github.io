@@ -367,8 +367,8 @@ function loadData(data) {
 	privateMenu.insertBefore(voidDiv, privateMenu.lastChild);
 
 	// Open main page
-	document.querySelector("#stnl-5fXnqmbl53aqjA7bUoFcdF").click();
 	overlay.hide(authenticated);
+	document.querySelector("#stnl-5fXnqmbl53aqjA7bUoFcdF").click();
 }
 
 function article(id) {
