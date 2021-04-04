@@ -67,8 +67,8 @@ class LoadingOverlay {
 	}
 	hide(callback) {
 		if (this.display) {
-			this.display = false;
 			if (callback) this.callback = callback;
+			this.display = false;
 		}
 	}
 }
