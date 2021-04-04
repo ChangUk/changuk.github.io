@@ -58,12 +58,10 @@ class LoadingOverlay {
 
 		this.display = true;
 		this.timer = setInterval(() => {
-			if (!this._display) {
-				console.log("hide overlay begin");
+			if (!this.display) {
 				this.el.style.setProperty("display", "none");
 				if (this.callback) this.callback();
 				clearInterval(this.timer);
-				console.log("hide overlay end");
 			}
 		}, 1000);
 	}
@@ -209,7 +207,6 @@ export function signout(msg, shake = false) {
 	} else el.innerHTML = "";
 }
 function authenticated() {
-	console.log("Authenticated!");
 	entryWrapper.classList.add("hidden");
 	privateWrapper.classList.remove("hidden");
 }
