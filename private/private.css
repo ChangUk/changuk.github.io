@@ -26,7 +26,7 @@ div.private-manager-control-wrapper { display: flex; margin: .2em 0; }
 #private-manager fieldset legend { font-family: consolas; text-transform: uppercase; color: #888; user-select: none; }
 #private-manager fieldset>div { margin-bottom: .5em; line-height: 1; }
 #private-manager fieldset>div:last-child { margin-bottom: 0; }
-#private-manager fieldset>div > label { display: block; margin-bottom: .2em; }
+#private-manager fieldset>div > label { display: block; margin-bottom: .3em; }
 
 #private-manager input[type="text"] {
     display: block; padding: 2px; width: 100%; border: none; box-sizing: border-box;

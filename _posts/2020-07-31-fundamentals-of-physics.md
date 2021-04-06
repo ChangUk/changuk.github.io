@@ -152,8 +152,10 @@ $$W=\int_c\vec{F}\cdot d\vec{X}$$
 > 가 **경로 $c$에 무관하게 일정할 때 $\vec{F}$는 보존장**이다.
 >
 > 이때, 포텐셜 에너지 $V$는 다음과 같이 정의할 수 있다:
->	$$V(\vec{X})\overset{\text{def}}{=}-\int\vec{F}d\vec{X}$$
->	- 경로 $c$가 생략됨 $\rightarrow$ 경로 의존성이 없음
+>
+> $$V(\vec{X})\overset{\text{def}}{=}-\int\vec{F}d\vec{X}$$
+>
+> - 경로 $c$가 생략됨 $\rightarrow$ 경로 의존성이 없음
 
 에너지 보존장에서 임의의 위치 $X_\ast$와 두 위치 $A$, $B$가 있을 때 각 포텐셜 에너지는 다음과 같이 쓸 수 있고:
 
