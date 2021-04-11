@@ -6,7 +6,7 @@ permalink: /about/
 
 ## Author
 
-ChangUk, Park
+Park ChangUk
 
 - Seoul, South Korea
 - &#252;&#7733;&#318;et&#357;e&#343;&#65312;&#287;&#7747;a&#299;l,&#263;o&#7745;

@@ -17,11 +17,11 @@
 		
 		<div class="wrapper">
 
-			<main class="page-content" aria-label="Content">{{ content }}</main>
+			<div id="overlay-sidebar"></div>
 
-			<toc class="hidden"></toc>
+			<div id="content-wrapper">{{ content }}</div>
 
-			<result class="page-content hidden">
+			<div id="search-result-wrapper" class="page-content hidden">
 
 				<template id="search-result-template">
 					<li>
@@ -34,7 +34,7 @@
 
 				<ul id="search-result" class="post-list"></ul>
 
-			</result>
+			</div>
 			
 		</div>
 

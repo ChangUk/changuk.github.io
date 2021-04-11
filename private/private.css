@@ -1,15 +1,7 @@
-body { background: #1e1e1e; }
-
 #private-manager {
-    position: absolute; left: 0; top: 0; bottom: 0; padding: .5em; width: 330px;
-    font-family: consolas; font-size: .8rem; overflow: scroll; color: #888; box-sizing: border-box;
+    padding: 1.6em 1.6em 1.6em 0;
+    font-family: consolas; font-size: .8rem; color: #383838; box-sizing: border-box;
 }
-#private-manager::-webkit-scrollbar { width: 8px; height: 8px; }
-#private-manager::-webkit-scrollbar-track { background: #00000000; }
-#private-manager::-webkit-scrollbar-thumb { background: hsla(0, 0%, 39%, .4); }
-#private-manager::-webkit-scrollbar-thumb:hover { background: hsla(0, 0%, 39%, .7); }
-/* #private-manager::-webkit-scrollbar-thumb:active { background: rgba(0, 0, 0, .6); } */
-#private-manager::-webkit-scrollbar-corner { background: #00000000; }
 
 #private-manager *::-webkit-scrollbar { width: 8px; height: 8px; }
 #private-manager *::-webkit-scrollbar-track { background: #00000000; }
@@ -22,38 +14,29 @@ body { background: #1e1e1e; }
 #private-manager-menu { display: flex; margin: 0 0 1.6em 0; }
 div.private-manager-control-wrapper { display: flex; margin: .2em 0; }
 
-#private-manager fieldset { border: solid 1px #383838; margin-bottom: 1.6em; }
-#private-manager fieldset legend { font-family: consolas; text-transform: uppercase; color: #888; user-select: none; }
+#private-manager fieldset { border: solid 1px #ddd; margin-bottom: 1.6em; }
+#private-manager fieldset legend { font-family: consolas; text-transform: uppercase; color: #383838; user-select: none; }
 #private-manager fieldset>div { margin-bottom: .5em; line-height: 1; }
 #private-manager fieldset>div:last-child { margin-bottom: 0; }
 #private-manager fieldset>div > label { display: block; margin-bottom: .3em; }
 
 #private-manager input[type="text"] {
     display: block; padding: 2px; width: 100%; border: none; box-sizing: border-box;
-    font-family: consolas; background: #383838; color: #f7f7f7; font-size: .8rem;
+    font-family: consolas; background: whitesmoke; color: #383838; font-size: .8rem;
 }
 
 #private-manager textarea {
     display: block; margin: 0; width: 100%; overflow: auto; border: none; resize: vertical; box-sizing: border-box;
-    font-family: consolas; background: #383838; color: #f7f7f7; font-size: .8rem; cursor: inherit;
+    font-family: consolas; background: whitesmoke; color: #383838; font-size: .8rem; cursor: inherit;
 }
 
-.invalid-value { background: #8c2323 !important; }
+.invalid-value { color: whitesmoke !important; background: #8c2323 !important; }
 
-#private-manager button {
-	display: inline-block; margin: 0 .1em; padding: .4em .6em;
-	border: 1px solid #585858; border-radius: 3px; box-shadow: 0 1px 0 #585858;
-	font: 300 .9rem/1 consolas; text-shadow: 0 0 .07rem rgba(0,0,0,.3); letter-spacing: -1px;
-	color: #b7b7b7; background-color: #383838;
-	white-space: nowrap; user-select: none;
-}
 div.private-manager-control-wrapper button { padding: .3em .5em !important; }
-#private-manager button:hover { color: #f7f7f7; background-color: #444; }
-#private-manager button:active { box-shadow: none; transform: translateY(1px); }
 
 #private-page {
     position: absolute; left: 0; top: 0; right: 0; bottom: 0;
-    overflow-y: auto; background: #f7f7f7; color: #383838;
+    background: whitesmoke; color: #383838;
     box-sizing: border-box; box-shadow: -7px 0 10px rgba(0,0,0,.7);
     transition: left .3s;
 }
@@ -100,6 +83,7 @@ div.errcode { margin: 2rem 0; font-size: 4rem; line-height: 1; letter-spacing: -
 #private-menu ul > li {
     position: relative; display: inline-block; margin: 0 !important; padding: 0 1.2em; height: 45px;
     font-size: .8rem; font-weight: 600; text-transform: uppercase; text-shadow: none; line-height: 45px; cursor: pointer; user-select: none;
+    white-space: nowrap;
 }
 #private-menu ul > li:hover { text-decoration: underline; }
 

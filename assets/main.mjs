@@ -1,5 +1,6 @@
 import katex from "/assets/lib/katex/0.12.0/katex.mjs";
 import renderMathInElement from "/assets/lib/katex/0.12.0/contrib/auto-render.mjs";
+import { Debounce } from "/assets/util.mjs"
 
 Element.prototype.removeAllChildren = function () {
 	while (this.lastChild) this.removeChild(this.lastChild);
@@ -111,17 +112,20 @@ if (pageContent) {
 }
 
 // Add table-of-content to headings
-function updateToc() {
+let updateToc = Debounce(function () {
 	const postContent = document.querySelector(".post-content");
-	let toc = document.querySelector("toc");
-	toc.removeAllChildren();
+	const toc = document.querySelector("#toc");
+	if (toc) {
+		toc.removeAllChildren();
 
-	let headings = postContent.querySelectorAll("h2, h3, h4");
-	if (headings.length < 2) {
-		Array.from(postContent.querySelectorAll("h2, h3, h4")).forEach(function (heading) {
-			heading.classList.add("no-toc");
+		let div = document.createElement("div");
+		div.setAttribute("tid", "Top");
+		div.classList.add("toc-item", "level-2");
+		div.innerHTML = "▲ Top";
+		div.addEventListener("click", function (e) {
+			document.body.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
 		});
-		return;
+		toc.appendChild(div);
 	}
 
 	Array.from(postContent.querySelectorAll("h2, h3, h4")).forEach(function (heading) {
@@ -130,8 +134,7 @@ function updateToc() {
 		div.setAttribute("tid", heading.id);
 		div.addEventListener("click", function (e) {
 			let target = document.getElementById(this.getAttribute("tid"));
-			if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-			toc.classList.add("hidden");
+			if (target) target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
 		});
 		if (heading.tagName === "H2") {
 			div.classList.add("toc-item", "level-2");
@@ -140,72 +143,14 @@ function updateToc() {
 		} else if (heading.tagName === "H4") {
 			div.classList.add("toc-item", "level-4");
 		}
-		toc.appendChild(div);
+		if (toc) toc.appendChild(div);
 	});
-	Array.from(postContent.querySelectorAll("h2, h3, h4")).forEach((heading, order) => {
-		heading.addEventListener("click", (e) => {
-			const privateContainer = document.querySelector("#private-page");
-			const container = privateContainer ? privateContainer : document.documentElement;
-
-			const wrapperRect = document.querySelector(".wrapper").getBoundingClientRect();
-			const wrapperRight = wrapperRect.x + wrapperRect.width;
-			let x = 0, y = 0;
-
-			let lastNode = heading.firstChild;
-			for (let i = heading.childNodes.length - 1; i >= 0; i--) {
-				if (heading.childNodes[i].nodeType === 1) {				// Element node
-					lastNode = heading.childNodes[i];
-					let range = document.createRange();
-					range.selectNode(lastNode);
-					let rect = range.getBoundingClientRect();
-					x = ((rect.x + rect.width + toc.getBoundingClientRect().width) < wrapperRight) ? rect.x + rect.width : (wrapperRight - toc.getBoundingClientRect().width);
-					y = rect.y + rect.height + 10 + container.scrollTop;
-					break;
-				} else if (heading.childNodes[i].nodeType === 3) {		// Text node
-					if (heading.childNodes[i].nodeValue) {
-						lastNode = heading.childNodes[i];
-						let range = document.createRange();
-						range.selectNodeContents(lastNode);
-						let rects = range.getClientRects();
-						let rect = rects[rects.length - 1];
-						x = ((rect.x + rect.width + toc.getBoundingClientRect().width) < wrapperRight) ? rect.x + rect.width : (wrapperRight - toc.getBoundingClientRect().width);
-						y = rect.y + rect.height + 10 + container.scrollTop;
-						break;
-					}
-				}
-			}
-
-			toc.setAttribute("style", "left: " + parseInt(x) + "px; top: " + parseInt(y) + "px;");
-			for (let i = 0; i < toc.children.length; i++) {
-				if (i === order) toc.children[i].classList.add("cur-item");
-				else toc.children[i].classList.remove("cur-item");
-			}
-			toc.classList.remove("hidden");
-		});
-	});
-}
+}, 1000, true);
 
 let observer = null;
-let postContent = document.querySelector(".post-content");
+const postContent = document.querySelector(".post-content");
 if (postContent) {
 	observer = new MutationObserver(updateToc);
 	observer.observe(postContent, { attributes: false, childList: true, subtree: false });
 	updateToc();
 }
-let toc = document.querySelector("toc");
-toc.addEventListener("mousedown", function (e) {
-	e.stopPropagation();
-});
-
-window.addEventListener("mousedown", function () {
-	let toc = document.querySelector("toc");
-	if (toc) toc.classList.add("hidden");
-});
-window.addEventListener("keydown", function (e) {
-	let toc = document.querySelector("toc");
-	if (toc) toc.classList.add("hidden");
-});
-window.addEventListener("resize", function (e) {
-	let toc = document.querySelector("toc");
-	if (toc) toc.classList.add("hidden");
-});

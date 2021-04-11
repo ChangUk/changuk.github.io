@@ -16,11 +16,11 @@ require([
 
 	let openSearchResult = /*Debounce(*/(input) => {
 		if (input && input.length) {
-			document.querySelector("main").classList.add("hidden");
-			document.querySelector("result").classList.remove("hidden");
+			document.querySelector("#content-wrapper").classList.add("hidden");
+			document.querySelector("#search-result-wrapper").classList.remove("hidden");
 		} else {
-			document.querySelector("main").classList.remove("hidden");
-			document.querySelector("result").classList.add("hidden");
+			document.querySelector("#content-wrapper").classList.remove("hidden");
+			document.querySelector("#search-result-wrapper").classList.add("hidden");
 		}
 	}/*, DEBOUNCE_TIME);*/
 
@@ -52,8 +52,8 @@ require([
 
 	if (searchInput.value.length && sessionStorage.searchdata) {
 		document.querySelector("#search-result").innerHTML = sessionStorage.searchdata;
-		document.querySelector("main").classList.add("hidden");
-		document.querySelector("result").classList.remove("hidden");
+		document.querySelector("#content-wrapper").classList.add("hidden");
+		document.querySelector("#search-result-wrapper").classList.remove("hidden");
 		searchInput.setSelectionRange(0, searchInput.value.length);
 	}
 

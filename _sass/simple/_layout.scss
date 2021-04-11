@@ -3,17 +3,51 @@
  */
 
 header {
-	position: sticky; left: 0; top: 0; right: 0;
-	background: rgba(255, 255, 255, .9);
+	position: fixed; left: 0; top: 0; right: 0;
+	background: #fff;
 	z-index: 10;
 	user-select: none;
 	border-bottom: 1px solid #ddd;
 }
 
+nav { display: flex; height: 44px; }
+
 content {
 	display: block;
+	padding-top: 44px;
 	padding-bottom: $spacing-unit;
 	background: #fff;
+}
+
+div#overlay-sidebar {
+	position: fixed; top: 0; left: 0; display: none; width: 100vw; height: 100vh;
+	z-index: 8;
+}
+
+aside {
+	position: sticky; width: 310px; left: 0; top: 44px; bottom: 0;
+	max-height: calc(100vh - (44px)); overflow-y: auto;
+	box-sizing: border-box; float: left;
+
+	@include media-query($on-laptop) {
+		position: fixed; left: inherit;
+		display: none; width: 75vw;
+		z-index: 9;
+	}
+
+	&::after { content: ""; display: table; clear: both; }
+}
+
+main {
+	box-sizing: border-box;
+
+	&.layout-post {
+		margin-left: calc(310px + 1.6em);
+
+		@include media-query($on-laptop) {
+			margin-left: 0;
+		}
+	}
 }
 
 footer {
@@ -26,28 +60,24 @@ footer {
 
 .wrapper {
 	max-width: calc(#{$content-width} - (#{$spacing-unit} * 2));
-	padding-right: $spacing-unit;
-	padding-left: $spacing-unit;
-	margin-right: auto;
-	margin-left: auto;
+	min-width: $on-laptop;
+
+	padding: 0 $spacing-unit;
+	margin: 0 auto;
 	@extend %clearfix;
 
 	@include media-query($on-laptop) {
 		padding-right: $spacing-unit / 2;
 		padding-left: $spacing-unit / 2;
+		min-width: unset;
 	}
 }
 
 %clearfix:after { content: ""; display: table; clear: both; }
 
-nav {
-	display: flex;
-	height: 44px;
-}
-toc {
-	position: absolute; padding: 1.3em 1.6em; min-width: 150px; max-width: 350px;
-	z-index: 1; background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 5px 7px rgba(0,0,0,.2);
-	box-sizing: border-box;
+#toc {
+	margin-right: $spacing-unit; padding: $spacing-unit $spacing-unit $spacing-unit 0;
+	border-bottom: 1px solid #ddd; background: #fff; box-sizing: border-box;
 
 	&.hidden { display: block; visibility: hidden; left: 0 !important; top: 0 !important; }
 
@@ -71,12 +101,14 @@ toc {
 		}
 	}
 }
-main {
-	display: block;
-}
+
 result {
 	display: block;
 	z-index: 2;
+}
+
+.flex-dummy {
+	flex: 1;
 }
 
 
@@ -147,6 +179,7 @@ result {
  * Tag and category page
  */
 
+#groupby { padding: $spacing-unit 0; }
 #groupby > div { display: none; }
 
 
@@ -156,6 +189,7 @@ result {
  */
 
 .page-content { padding: $spacing-unit 0; }
+.layout-post.page-content { padding-top: 0; }
 .page-heading { @include relative-font-size(2); }
 .post-list-heading { @include relative-font-size(1.75); }
 .post-list {
@@ -165,21 +199,17 @@ result {
 }
 
 .post-meta {
-	font-size: $small-font-size;
-	color: $gray;
-	text-align: justify;
-	user-select: none;
+	font-size: $small-font-size; color: $gray; text-align: justify; user-select: none;
+
 	time { margin-right: 1em; }
 
 	& > a {
 		color: unset;
 	}
-
-	&::after { content: ""; display: table; clear: both; }
 }
+.layout-post .post-meta { display: flex; }
 .post-link { @include relative-font-size(1.5); line-height: 100%; }
-.post-meta-category { float: left; }
-.post-meta-tags { float: right; text-align: right; max-width: 380px; }
+.post-meta-tags { max-width: 380px; }
 
 
 
@@ -188,22 +218,11 @@ result {
  */
 
 .post-header {
-	position: relative;
-	left: -($spacing-unit * 2 + 0.7em);
-	margin: $spacing-unit 0;
-	padding: $spacing-unit $spacing-unit * 2;
-	width: 100%;
-	border: 0.7em solid #f7f7f7;
-	float: left;
+	margin-bottom: $spacing-unit; padding: $spacing-unit 0;
+	background: #fff; border-bottom: 1px solid #ddd; z-index: 9;
 
 	> *:last-child {
 		margin-bottom: 0 !important;
-	}
-
-	@include media-query($on-laptop) {
-		left: 0;
-		padding: $spacing-unit / 2 $spacing-unit * 1.6 / 2;
-		box-sizing: border-box;
 	}
 }
 
@@ -218,10 +237,7 @@ result {
 }
 
 .post-content {
-	position: relative;
 	margin-bottom: 5em;
-	width: 100%;
-	float: left;
 	text-align: justify;
 	
 	div { margin: $spacing-unit 0; }

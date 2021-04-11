@@ -2,33 +2,37 @@
 layout: default
 ---
 
-{%- if site.posts.size > 0 -%}
-	<!--<h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>-->
-	<ul class="post-list">
-		{%- for post in site.posts -%}
+<main class="layout-home page-content" aria-label="Content">
 
-			{% unless post.tags contains "hidden" %}
+	{%- if site.posts.size > 0 -%}
+		<!--<h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>-->
+		<ul class="post-list">
+			{%- for post in site.posts -%}
 
-			<li>
-				<div class="post-meta">
-					
-					{%- assign date_format = "%b %-d, %Y" -%}
-					<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: date_format }}</time>
-					{% for category in post.category %}
-					/ <a href="{{ site.baseurl }}/category/?category={{ category | replace: ' ', '-' }}">{{ category }}</a>
-					{% endfor %}
+				{% unless post.tags contains "hidden" %}
 
-				</div>
-				<h3>
-					<a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-				</h3>
-				{%- if site.show_excerpts -%}
-					{{ post.excerpt }}
-				{%- endif -%}
-			</li>
+				<li>
+					<div class="post-meta">
+						
+						{%- assign date_format = "%b %-d, %Y" -%}
+						<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: date_format }}</time>
+						{% for category in post.category %}
+						/ <a href="{{ site.baseurl }}/category/?category={{ category | replace: ' ', '-' }}">{{ category }}</a>
+						{% endfor %}
 
-			{% endunless %}
+					</div>
+					<h3>
+						<a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+					</h3>
+					{%- if site.show_excerpts -%}
+						{{ post.excerpt }}
+					{%- endif -%}
+				</li>
 
-		{%- endfor -%}
-	</ul>
-{%- endif -%}
+				{% endunless %}
+
+			{%- endfor -%}
+		</ul>
+	{%- endif -%}
+
+</main>

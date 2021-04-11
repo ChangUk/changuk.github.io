@@ -2,32 +2,43 @@
 layout: default
 ---
 
-<article class="post h-entry" itemscope itemtype="https://schema.org/BlogPosting">
+<aside>
 
-	<div class="post-header">
-		<h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
-		<div class="post-meta">
-			<div class="post-meta-category">
+	<div id="toc"></div>
 
-				{%- assign date_format = "%b %-d, %Y" -%}
-				<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: date_format }}</time>
-				{% for category in page.category %}
-				/ <a href="{{ site.baseurl }}/category/?category={{ category | replace: ' ', '-' }}">{{ category }}</a>
-				{% endfor %}
+</aside>
 
-			</div>
-			<div class="post-meta-tags">
+<main class="layout-post page-content" aria-label="Content">
 
-				{% for tag in page.tags %}
-				<a href="{{ site.baseurl }}/tag/?tag={{ tag | replace: ' ', '-' }}" class="tag">#{{ tag }}</a>
-				{% endfor %}
+	<article class="post h-entry" itemscope itemtype="https://schema.org/BlogPosting">
 
+		<div class="post-header">
+			<h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+			<div class="post-meta">
+				<div class="post-meta-category">
+
+					{%- assign date_format = "%b %-d, %Y" -%}
+					<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: date_format }}</time>
+					{% for category in page.category %}
+					/ <a href="{{ site.baseurl }}/category/?category={{ category | replace: ' ', '-' }}">{{ category }}</a>
+					{% endfor %}
+
+				</div>
+				<div class="flex-dummy"></div>
+				<div class="post-meta-tags">
+
+					{% for tag in page.tags %}
+					<a href="{{ site.baseurl }}/tag/?tag={{ tag | replace: ' ', '-' }}" class="tag">#{{ tag }}</a>
+					{% endfor %}
+
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="post-content" itemprop="articleBody">
-		{{ content }}
-	</div>
+		<div class="post-content" itemprop="articleBody">
+			{{ content }}
+		</div>
 
-</article>
+	</article>
+
+</main>
