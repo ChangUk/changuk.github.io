@@ -154,3 +154,5 @@ if (postContent) {
 	observer.observe(postContent, { attributes: false, childList: true, subtree: false });
 	updateToc();
 }
+
+document.querySelector("#search-input").focus();

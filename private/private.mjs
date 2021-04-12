@@ -431,6 +431,7 @@ function openManager() {
 		option.value = entityType;
 		entityTypes.appendChild(option);
 	});
+
 	document.addEventListener("contextmenu", (e) => {
 		e.preventDefault();
 		function getElId(el) {
@@ -448,7 +449,8 @@ function openManager() {
 		}
 		getElId(e.target);
 	});
-	{
+	
+	{ // Export
 		const btnExport = document.querySelector("#id-3rTZdFdxjcWXsrIpFFkaTj");
 		btnExport.addEventListener("click", e => {
 			let result = confirm("Are you sure to export private data?");
