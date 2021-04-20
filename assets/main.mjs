@@ -118,34 +118,34 @@ let updateToc = Debounce(function () {
 	if (toc) {
 		toc.removeAllChildren();
 
-		let div = document.createElement("div");
-		div.setAttribute("tid", "Top");
-		div.classList.add("toc-item", "level-2");
-		div.innerHTML = "▲ Top";
-		div.addEventListener("click", function (e) {
+		let divTop = document.createElement("div");
+		divTop.setAttribute("tid", "Top");
+		divTop.classList.add("toc-item", "level-2");
+		divTop.innerHTML = "&#x1f851; Top";
+		divTop.addEventListener("click", function (e) {
 			document.body.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
 		});
-		toc.appendChild(div);
-	}
+		toc.appendChild(divTop);
 
-	Array.from(postContent.querySelectorAll("h2, h3, h4")).forEach(function (heading) {
-		let div = document.createElement("div");
-		div.innerHTML = heading.innerHTML;
-		div.setAttribute("tid", heading.id);
-		div.addEventListener("click", function (e) {
-			let target = document.getElementById(this.getAttribute("tid"));
-			if (target) target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+		Array.from(postContent.querySelectorAll("h2, h3, h4")).forEach(function (heading) {
+			let div = document.createElement("div");
+			div.innerHTML = heading.innerHTML;
+			div.setAttribute("tid", heading.id);
+			div.addEventListener("click", function (e) {
+				let target = document.getElementById(this.getAttribute("tid"));
+				if (target) target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+			});
+			if (heading.tagName === "H2") {
+				div.classList.add("toc-item", "level-2");
+			} else if (heading.tagName === "H3") {
+				div.classList.add("toc-item", "level-3");
+			} else if (heading.tagName === "H4") {
+				div.classList.add("toc-item", "level-4");
+			}
+			toc.appendChild(div);
 		});
-		if (heading.tagName === "H2") {
-			div.classList.add("toc-item", "level-2");
-		} else if (heading.tagName === "H3") {
-			div.classList.add("toc-item", "level-3");
-		} else if (heading.tagName === "H4") {
-			div.classList.add("toc-item", "level-4");
-		}
-		if (toc) toc.appendChild(div);
-	});
-}, 1000, true);
+	}
+}, 300);
 
 let observer = null;
 const postContent = document.querySelector(".post-content");

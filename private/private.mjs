@@ -4,13 +4,11 @@ import { Entity } from "/assets/lib/sectional/1.0.0/entity.js";
 import { Sectional } from "/assets/lib/sectional/1.0.0/sectional.js";
 import { Remarkable } from "/assets/lib/remarkable/2.0.0/remarkable.js";
 import { default as CryptoES } from "/assets/lib/crypto-es/1.2.6/index.js";
-import { ShakeElement } from "/assets/util.mjs"
+import { ShakeElement } from "/assets/util.mjs";
 
 const DEBUG = false;
 
 const AUTH_MESSAGE = "U2FsdGVkX19BSw9elWK2K5nKVbmFScJVxM6QpumRDhRy1ZBOdJoVJjMC7B4Y+g2/";
-
-let privateData = null;
 
 const SESSION_TIME = (DEBUG ? 60 : 10) * 60 * 1000;
 
@@ -36,7 +34,7 @@ function resetTimer() {
 	sessionStorage.setItem("expire", Date.now() + SESSION_TIME);
 }
 
-export let uuidv4 = (quotation = false) => {
+let uuidv4 = (quotation = false) => {
 	let newUuid = new ShortUuidV4().new();
 	return quotation ? `"${newUuid}"` : newUuid;
 };
@@ -87,7 +85,7 @@ const contentWrapper = document.querySelector("#private-content");
 const timeDisplayer = document.querySelector("#session-timer");
 
 let overlay = null;
-export let sectional = null;
+let sectional = null;
 
 // Check element variables
 if (!entryWrapper || !inputPassphrase || !privateWrapper) {
@@ -142,13 +140,15 @@ function auth(passphrase) {
 			// Set timer
 			resetTimer();
 
-			// Loading private data
-			fetch(DEBUG ? "/private/data.json" : "/private/data.txt").then(response => {
+			// Load private data
+			//fetch(DEBUG ? "/private/data.json" : "/private/data.txt").then(response => {
+			fetch("/private/data.txt").then(response => {
 				if (response.ok) return response.text();
 				return {};
 			}).then(data => {
 				try {
-					let decrypted = DEBUG ? data : CryptoES.AES.decrypt(data, passphrase).toString(CryptoES.enc.Utf8);
+					//let decrypted = DEBUG ? data : CryptoES.AES.decrypt(data, passphrase).toString(CryptoES.enc.Utf8);
+					let decrypted = CryptoES.AES.decrypt(data, passphrase).toString(CryptoES.enc.Utf8);
 					if (decrypted) {
 						return JSON.parse(decrypted);
 					} else {
@@ -163,8 +163,7 @@ function auth(passphrase) {
 					console.error(e);
 				}
 			}).then(json => {
-				privateData = json;
-				loadData(privateData);
+				loadData(json);
 				openManager();
 			}).catch(e => {
 				console.error(e);
@@ -194,9 +193,8 @@ export function signout(msg, shake = false) {
 
 	sessionStorage.removeItem("passphrase");
 	sessionStorage.removeItem("expire");
-	
+
 	resetViewport();
-	privateData = null;
 
 	entryWrapper.classList.remove("hidden");
 	if (inputPassphrase) inputPassphrase.focus();
@@ -267,7 +265,6 @@ const ArticleHierarchy = {
 
 function loadData(data) {
 	if (!data) return;
-	if (DEBUG) inspectData(data);
 
 	sectional = new Sectional(contentWrapper, data, {
 		insertSections: false,
@@ -313,7 +310,7 @@ function loadData(data) {
 
 		let menuWrapper = ArticleHierarchy[menuWrapperId];
 		menuWrapper.children.forEach((id) => {
-			let entity = (id in ArticleHierarchy) ? ArticleHierarchy[id] : privateData[id];
+			let entity = (id in ArticleHierarchy) ? ArticleHierarchy[id] : sectional.getEntity(id);
 			if (!entity) return;
 
 			let li = document.createElement("li");
@@ -387,7 +384,7 @@ function article(id) {
 function dropdown(id, parentEl) {
 	let li = document.createElement("li");
 	if (id) {
-		let entity = (id in ArticleHierarchy) ? ArticleHierarchy[id] : privateData[id];
+		let entity = (id in ArticleHierarchy) ? ArticleHierarchy[id] : sectional.getEntity(id);
 		if (!entity) return;
 
 		li.id = `stnl-${id}`;
@@ -409,7 +406,7 @@ function dropdown(id, parentEl) {
 }
 
 function action(id) {
-	let entity = (id in ArticleHierarchy) ? ArticleHierarchy[id] : privateData[id];
+	let entity = (id in ArticleHierarchy) ? ArticleHierarchy[id] : sectional.getEntity(id);
 	if (!entity) return;
 
 	if (checkSession()) {
@@ -449,12 +446,18 @@ function openManager() {
 		}
 		getElId(e.target);
 	});
-	
+
 	{ // Export
 		const btnExport = document.querySelector("#id-3rTZdFdxjcWXsrIpFFkaTj");
 		btnExport.addEventListener("click", e => {
 			let result = confirm("Are you sure to export private data?");
 			if (result) exportData();
+		});
+	}
+	{
+		const btnInspect = document.querySelector("#id-1NAFGkLR4TXDd24jmOS6NH");
+		btnInspect.addEventListener("click", e => {
+			inspectData();
 		});
 	}
 	{ // Entity Editor
@@ -532,36 +535,50 @@ function openManager() {
 
 		const btnReset = document.querySelector("#id-3F5CVe3tnFadXKSNxNDJYA");
 		btnReset.addEventListener("click", (e) => {
-			const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
-			curId.value = "";
-			curId.dispatchEvent(new Event("change"));
+			const entityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+			entityId.value = "";
+			entityId.dispatchEvent(new Event("change"));
 		});
 
 		const btnNewId = document.querySelector("#id-0W4rZ284okFhNi3wEwsRdO");
 		btnNewId.addEventListener("click", e => {
-			const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
-			curId.value = uuidv4();
+			const entityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+			entityId.value = uuidv4();
+			const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+			entityContent.value = entityContent.value.replace(/(\"_id\"\s*:\s*\").*\"/, `$1${entityId.value}"`);
 		});
 
 		const btnSave = document.querySelector("#id-2QEfF3VjOq5mStkqEMaFRO");
 		btnSave.addEventListener("click", (e) => {
-			const curId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
-			if (!checkIdFormat(curId.value)) {
+			const entityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+			if (!checkIdFormat(entityId.value)) {
 				alert("Invalid Entity ID format!");
 				return;
 			}
 			const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+			const checkBox = document.querySelector("#id-6SPsMZVMeMkxjleU85vY0X");
 			if (!checkEntityContent(entityContent.value)) {
 				alert("Invalid JSON format!");
 				return;
 			}
-			if (curId.value.length && entityContent.value.length) {
+			if (entityId.value.length && entityContent.value.length) {
 				let res = false;
-				if (sectional.getEntity(curId.value)) res = confirm("The given entity ID is existing.\nAre you sure to overwrite?");
+				if (sectional.getEntity(entityId.value)) res = confirm("The given entity ID is existing.\nAre you sure to overwrite?");
 				else res = confirm("Are you sure to save entity?");
 				if (res) {
 					try {
-						let result = sectional.setEntity(curId.value, JSON.parse(entityContent.value));
+						let entity = JSON.parse(entityContent.value);
+						if (checkBox.checked && entity.hasOwnProperty("_parents")) {
+							entity._parents.forEach(parentId => {
+								let parentEntity = sectional.getEntity(parentId);
+								if (parentEntity && parentEntity.hasOwnProperty("children")) {
+									if (!parentEntity.children.includes(entityId.value))
+										parentEntity.children.push(entityId.value);
+									sectional.setEntity(parentId, parentEntity);
+								}
+							});
+						}
+						let result = sectional.setEntity(entityId.value, entity);
 						if (result) alert("Successfully saved!");
 						else alert("Failed to save entity!");
 					} catch (err) {
@@ -645,7 +662,7 @@ function openManager() {
 }
 
 function exportData() {
-	let deepCopied = JSON.parse(JSON.stringify(privateData));
+	let deepCopied = JSON.parse(JSON.stringify(sectional.getData()));
 	for (const [id, entity] of Object.entries(deepCopied)) {
 		for (const key of Object.keys(entity)) {
 			if (key.startsWith('_')) delete entity[key];
@@ -658,52 +675,48 @@ function exportData() {
 	a.click();
 }
 
-function inspectData(data) {
+function inspectData() {
 	// TEST #1: Set reference counts for each data items
 	let reference = (parent, id) => {
 		if (!id || id.length !== 22) return;
-		if (data.hasOwnProperty(id)) {
-			let entity = data[id];
-
-			// Metadata
-			if (!entity.hasOwnProperty("_parents")) entity._parents = [];
-			entity._parents.push(parent);
-
+		let entity = sectional.getEntity(id);
+		if (entity) {
 			// Necessary properties
-			if (entity.children)
+			if (entity.hasOwnProperty("children"))
 				entity.children.forEach(childId => { reference(id, childId); });
-			if (entity.content && typeof entity.content === "object")
+			if (entity.hasOwnProperty("content") && typeof entity.content === "object")
 				Object.keys(entity.content).forEach((key) => { reference(id, entity.content[key]); });
 
 			// Optional properties
-			if (entity.classlist)
+			if (entity.hasOwnProperty("classlist"))
 				reference(id, entity.classlist);
-			if (entity.properties)
+			if (entity.hasOwnProperty("properties"))
 				reference(id, entity.properties);
-			if (entity.action)
+			if (entity.hasOwnProperty("action"))
 				reference(id, entity.action);
-
 		} else console.log(`--- Broken pointer: parent("${parent}") -> target("${id}")"`);
 	}
-	reference(null, Sectional.getEntry());
+	reference(null, sectional.getEntry());
 
 	// TEST #2: Check if invalid data exists and get parent object
 	let multiRefs = [];
 	let standalone = {};
-	Object.keys(data).forEach(id => {
-		let obj = data[id];
-		if (obj.hasOwnProperty("_parents")) {
-			if (obj._parents.length > 1)
-				multiRefs.push({ id: id, count: obj._parents.length });
-		} else standalone[id] = (obj);
+	let entityIDs = Object.keys(sectional.getData());
+	entityIDs.forEach(id => {
+		let entity = sectional.getEntity(id);
+		if (entity.hasOwnProperty("_parents")) {
+			if (entity._parents.length > 1)
+				multiRefs.push({ id: id, refCount: entity._parents.length });
+		} else standalone[id] = entity;
 	});
-	multiRefs.msort([{ key: "count", order: "descending" }]);
+	multiRefs.msort([{ key: "refCount", order: "descending" }]);
+
 	if (multiRefs.length) {
 		console.log("--- Multi-referenced entities: ");
 		multiRefs.forEach((obj, order) => {
-			let item = data[obj.id];
-			if (item.type !== "action" && item.type !== "properties" && item.type !== "classlist")
-				console.log(`"${obj.id}"`, item);
+			let entity = sectional.getEntity(obj.id);
+			if (entity.type !== "action" && entity.type !== "properties" && entity.type !== "classlist")
+				console.log(`"${obj.id}"`, entity);
 		});
 	}
 	if (Object.keys(standalone).length) {

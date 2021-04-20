@@ -4,7 +4,7 @@
 
 header {
 	position: fixed; left: 0; top: 0; right: 0;
-	background: #fff;
+	background: rgba(255, 255, 255, .9);;
 	z-index: 10;
 	user-select: none;
 	border-bottom: 1px solid #ddd;
@@ -27,7 +27,7 @@ div#overlay-sidebar {
 aside {
 	position: sticky; width: 310px; left: 0; top: 44px; bottom: 0;
 	max-height: calc(100vh - (44px)); overflow-y: auto;
-	box-sizing: border-box; float: left;
+	box-sizing: border-box; float: left; background: #fff;
 
 	@include media-query($on-laptop) {
 		position: fixed; left: inherit;
@@ -35,11 +35,12 @@ aside {
 		z-index: 9;
 	}
 
-	&::after { content: ""; display: table; clear: both; }
+	@extend %clearfix;
 }
 
 main {
 	box-sizing: border-box;
+	overflow-x: auto;
 
 	&.layout-post {
 		margin-left: calc(310px + 1.6em);
@@ -76,7 +77,7 @@ footer {
 %clearfix:after { content: ""; display: table; clear: both; }
 
 #toc {
-	margin-right: $spacing-unit; padding: $spacing-unit $spacing-unit $spacing-unit 0;
+	margin-right: $spacing-unit; padding: $spacing-unit 0;
 	border-bottom: 1px solid #ddd; background: #fff; box-sizing: border-box;
 
 	&.hidden { display: block; visibility: hidden; left: 0 !important; top: 0 !important; }
@@ -100,11 +101,6 @@ footer {
 			pointer-events: none;
 		}
 	}
-}
-
-result {
-	display: block;
-	z-index: 2;
 }
 
 .flex-dummy {
@@ -218,8 +214,8 @@ result {
  */
 
 .post-header {
-	margin-bottom: $spacing-unit; padding: $spacing-unit 0;
-	background: #fff; border-bottom: 1px solid #ddd; z-index: 9;
+	margin: 0 0 $spacing-unit 0; padding: $spacing-unit 0;
+	background: #fff; border-bottom: 1px solid #ddd;
 
 	> *:last-child {
 		margin-bottom: 0 !important;

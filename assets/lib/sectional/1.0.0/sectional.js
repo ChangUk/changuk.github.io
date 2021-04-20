@@ -30,7 +30,8 @@ export class Sectional {
             if (parent) {
                 if (!("_parents" in entity))
                     entity._parents = [];
-                entity._parents.push(parent);
+                if (!entity._parents.includes(parent))
+                    entity._parents.push(parent);
             }
             // Iterate
             if (entity.hasOwnProperty("children")) {
@@ -61,7 +62,10 @@ export class Sectional {
     getEntry() {
         return this._entry;
     }
-    importData(data) {
+    getData() {
+        return this._data;
+    }
+    setData(data) {
         this._data = data;
     }
     exportData(removeMetadata = true) {

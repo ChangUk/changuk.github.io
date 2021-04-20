@@ -10,7 +10,6 @@
 /* #private-manager *::-webkit-scrollbar-thumb:active { background: rgba(0, 0, 0, .6); } */
 #private-manager *::-webkit-scrollbar-corner { background: #00000000; }
 
-#private-manager-header { position: sticky; left: 0; top: 0; right: 0; user-select: none; border-bottom: #000; }
 #private-manager-menu { display: flex; margin: 0 0 1.6em 0; }
 div.private-manager-control-wrapper { display: flex; margin: .2em 0; }
 
@@ -29,6 +28,8 @@ div.private-manager-control-wrapper { display: flex; margin: .2em 0; }
     display: block; margin: 0; width: 100%; overflow: auto; border: none; resize: vertical; box-sizing: border-box;
     font-family: consolas; background: whitesmoke; color: #383838; font-size: .8rem; cursor: inherit;
 }
+
+#private-manager del { color: hsl(0, 60%, 50%); }
 
 .invalid-value { color: whitesmoke !important; background: #8c2323 !important; }
 
