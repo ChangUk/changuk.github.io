@@ -185,10 +185,8 @@ table {
 }
 
 hr {
-	border-top: none;
-	border-bottom: 1px solid #ddd;
-	width: 100%;
-	margin: 5em 0;
+	margin: 5em 0; width: 100%; box-sizing: border-box;
+	border-top: none; border-bottom: 1px solid #ddd;
 }
 
 .svg-icon { width: 16px; height: 16px; display: inline-block; fill: #{$gray}; padding-right: 5px; vertical-align: text-top; }
