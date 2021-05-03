@@ -114,3 +114,12 @@ div.errcode { margin: 2rem 0; font-size: 4rem; line-height: 1; letter-spacing: -
 #private-content h4,
 #private-content h5,
 #private-content h6 { text-transform: uppercase; }
+
+#private-content pre { margin: 1em 0; padding: 1em; overflow-x: auto; font-size: .9em; }
+#private-content code {
+    font-family: consolas;
+    word-break: keep-all; word-wrap: break-word;
+    line-height: 1.2;
+    white-space: pre;
+    white-space: pre-wrap;
+}

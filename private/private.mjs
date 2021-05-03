@@ -262,6 +262,7 @@ const ArticleHierarchy = {
 		type: "action"
 	}
 };
+let currentArticle = "";
 
 function loadData(data) {
 	if (!data) return;
@@ -269,29 +270,40 @@ function loadData(data) {
 	sectional = new Sectional(contentWrapper, data, {
 		insertSections: false,
 		callback: (el, ...params) => {
-			// Translate markdown syntax
-			let markdown = new Remarkable("commonmark", {});
-			el.innerHTML = markdown.render(el.innerHTML);
-			if (el.children.length === 1) {
-				// In genenral, texts are transformed into <p> element.
-				el.innerHTML = el.innerHTML.replace(/^(\s*<p>)|(<\/p>\s*)$/g, "");
-			} else if (el.children.length > 1) {
-				let div = document.createElement("div");
-				div.innerHTML = el.innerHTML;
-				el.innerHTML = "";
-				el.appendChild(div);
-			}
+			if (el.tagName === "PRE") {
+				el.classList.add("hljs");
+				el.querySelectorAll("code").forEach(function (code) {
+					if (code.classList.length) {
+						const worker = new Worker("/assets/lib/highlight/10.7.2/worker.js");
+						worker.onmessage = (e) => { code.innerHTML = e.data; }
+						worker.postMessage(code.textContent);
+					}
+				});
+			} else {
+				// Translate markdown syntax
+				let markdown = new Remarkable("commonmark", {});
+				el.innerHTML = markdown.render(el.innerHTML);
+				if (el.children.length === 1) {
+					// In genenral, texts are transformed into <p> element.
+					el.innerHTML = el.innerHTML.replace(/^(\s*<p>)|(<\/p>\s*)$/g, "");
+				} else if (el.children.length > 1) {
+					let div = document.createElement("div");
+					div.innerHTML = el.innerHTML;
+					el.innerHTML = "";
+					el.appendChild(div);
+				}
 
-			// Render math equations
-			renderMathInElement(el, {
-				throwOnError: false,
-				delimiters: [
-					{ left: "$$", right: "$$", display: true },
-					{ left: "$", right: "$", display: false },
-					{ left: "\\(", right: "\\)", display: false },
-					{ left: "\\[", right: "\\]", display: true }
-				]
-			});
+				// Render math equations
+				renderMathInElement(el, {
+					throwOnError: false,
+					delimiters: [
+						{ left: "$$", right: "$$", display: true },
+						{ left: "$", right: "$", display: false },
+						{ left: "\\(", right: "\\)", display: false },
+						{ left: "\\[", right: "\\]", display: true }
+					]
+				});
+			}
 		},
 		entry: "0000000000000000000000"
 	});
@@ -375,6 +387,7 @@ function article(id) {
 		if (sectional) {
 			sectional.clearViewport();
 			sectional.article(id, false);
+			currentArticle = id;
 		}
 	} else {
 		signout("Session expired!");
@@ -437,27 +450,30 @@ function openManager() {
 			if (id && /^stnl-[a-zA-Z0-9]{22}/.exec(id)) {
 				let match = id.replace(/^stnl-/g, "").match(/\b[a-zA-Z0-9]{22}\b/);
 				if (match && match[0]) {
-					let entityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
+					const entityId = document.querySelector("#id-2iB1fu5I8X0uE71RUNXjkV");
 					entityId.value = match[0];
 					entityId.dispatchEvent(new Event("change"));
+
+					const entityContent = document.querySelector("#id-1ilMellLqQg27kkGPQVFmG");
+					entityContent.scrollTop = 0;
+					entityContent.scrollLeft = 0;
 				}
 				else getElId(el.parentNode);
 			} else getElId(el.parentNode);
 		}
 		getElId(e.target);
+		resetTimer();
 	});
 
 	{ // Export
+		const btnInspect = document.querySelector("#id-1NAFGkLR4TXDd24jmOS6NH");
+		btnInspect.addEventListener("click", e => {
+			inspectData();
+		});
 		const btnExport = document.querySelector("#id-3rTZdFdxjcWXsrIpFFkaTj");
 		btnExport.addEventListener("click", e => {
 			let result = confirm("Are you sure to export private data?");
 			if (result) exportData();
-		});
-	}
-	{
-		const btnInspect = document.querySelector("#id-1NAFGkLR4TXDd24jmOS6NH");
-		btnInspect.addEventListener("click", e => {
-			inspectData();
 		});
 	}
 	{ // Entity Editor
@@ -579,8 +595,12 @@ function openManager() {
 							});
 						}
 						let result = sectional.setEntity(entityId.value, entity);
-						if (result) alert("Successfully saved!");
-						else alert("Failed to save entity!");
+						if (result) {
+							alert("Successfully saved!");
+							if (currentArticle) sectional.article(currentArticle);
+						} else {
+							alert("Failed to save entity!");
+						}
 					} catch (err) {
 						alert(`Failed to save entity: ${err}`);
 					}

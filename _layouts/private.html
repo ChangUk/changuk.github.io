@@ -4,6 +4,10 @@
 
 	{%- include head.html -%}
 
+	<!-- Highlight -->
+	<link rel="stylesheet" href="{{ "/assets/lib/highlight/10.7.2/styles/darcula.css" | relative_url }}" />
+	<script src="{{ "/assets/lib/highlight/10.7.2/highlight.pack.js" | relative_url }}"></script>
+
 	<!-- Private -->
 	<link rel="stylesheet" href="{{ "/assets/lib/sectional/sectional.css" | relative_url }}" />
 	<script type="module" src="{{ "/private/private.mjs" | relative_url }}"></script>
@@ -57,9 +61,8 @@
 					<div id="private-manager">
 						<div id="private-manager-header">
 							<div id="private-manager-menu">
-								<button id="id-5EjQeSuIQrRWLx6J4IOQIl"><del>Import</del></button>
-								<button id="id-3rTZdFdxjcWXsrIpFFkaTj">Export</button>
 								<button id="id-1NAFGkLR4TXDd24jmOS6NH">Inspect</button>
+								<button id="id-3rTZdFdxjcWXsrIpFFkaTj">Export</button>
 							</div>
 						</div>
 						<fieldset>

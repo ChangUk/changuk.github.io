@@ -1,0 +1,296 @@
+---
+layout: default
+permalink: /function/encryption/
+---
+
+<div>
+	<div class="post-header">
+		<h1 class="post-title">Data Encryption</h1>
+		<div class="post-meta">
+			<div class="post-meta-description">Support both file and plain text as an input.</div>
+		</div>
+	</div>
+	<div class="post-content">
+		<h2>Encryption</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="right header fit-width">Input Type:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="radio" id="id-6mLPXWfWHnlyLuiUKjSpAK" name="encryption-type" value="file" checked />
+						<label for="id-6mLPXWfWHnlyLuiUKjSpAK" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">File</label>
+						<input type="radio" id="id-2mnESRH4DTY50kg4hYm6mL" name="encryption-type" value="text" />
+						<label for="id-2mnESRH4DTY50kg4hYm6mL" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">Text</label>
+					</td>
+				</tr>
+				<tr id="id-6YJj8lPA7EPtNSnRwg61K6">
+					<td class="right header fit-width">Input:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="file" id="id-7F8UDU997zHchkJe9ReuJY" class="hidden" />
+						<label id="id-5DryRV0bqXBUw7n20diSeR" for="id-7F8UDU997zHchkJe9ReuJY" class="button">Select a file...</label>
+						<span id="id-4CyNp0EFeswXChKXskAW21" style="margin-left: 5px; font-size: .9rem;"></span>
+					</td>
+				</tr>
+				<tr id="id-33iUPQFU5kTx5T4CyVoVi7" class="hidden">
+					<td class="right header fit-width">Input:</td>
+					<td style="padding: 0; font-size: 0;">
+						<textarea id="id-1GGAazPdULd3PCZI3P82mG" style="width: 100%; height: 300px; overflow-y: scroll; resize: none; border: none; box-sizing: border-box; font-size: .9rem;" wrap="off"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Encryption Key:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="password" id="id-0zFVcLZadrpcvVYXEuVFfr" placeholder="Input encryption key..." style="padding: 7px; width: 100%; line-height: 1; border: none; box-sizing: border-box;" />
+					</td>
+				</tr>
+				<tr id="id-2Sl5SMdVWlsYrrxUBOBlhO">
+					<td class="right header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="id-0364PNoSTYfAf6ISL3KyJu">Download Encrypted File</button>
+						<button id="id-2UtGZGqzBpiGwwW2GzoI8J">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>Decryption</h2>
+		<p>If you want to decrypt a file, you should <strong>specify the file extension</strong> of that to be decrypted.</p>
+		<table>
+			<tbody>
+				<tr>
+					<td class="right header fit-width">Input:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="file" id="id-6Ehw6paWAhHWUgaKkkisiL" class="hidden" />
+						<label id="id-6OJ2Dgqaw49rw8gbwAnRU8" for="id-6Ehw6paWAhHWUgaKkkisiL" class="button">Select a file...</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">MIME Type:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="id-01oubdGbY7WsAYUE93XWKN" style="padding: 7px; width: 100%; font-family: consolas; line-height: 1; border: none; box-sizing: border-box;" readonly />
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Decryption Key:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="password" id="id-0CxHKosuwmlxeuLYqPaKHB" placeholder="Input decryption key..." style="padding: 7px; width: 100%; line-height: 1; border: none; box-sizing: border-box;" />
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="id-7xWDBmngXOKPbzQVjVbdLc">Download Decrypted File</button>
+						<button id="id-4XCryI03qtxX91UC9rgw3Y">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="module">
+import("/assets/lib/crypto-es/1.2.6/index.js").then((mod) => {
+	const CryptoES = mod.default;
+
+	// Encryption
+	const encTypeFile = document.querySelector("#id-6mLPXWfWHnlyLuiUKjSpAK");
+	encTypeFile.addEventListener("change", (e) => {
+		document.querySelector("#id-6YJj8lPA7EPtNSnRwg61K6").classList.remove("hidden");
+		document.querySelector("#id-33iUPQFU5kTx5T4CyVoVi7").classList.add("hidden");
+	});
+	const encTypeText = document.querySelector("#id-2mnESRH4DTY50kg4hYm6mL");
+	encTypeText.addEventListener("change", (e) => {
+		document.querySelector("#id-6YJj8lPA7EPtNSnRwg61K6").classList.add("hidden");
+		document.querySelector("#id-33iUPQFU5kTx5T4CyVoVi7").classList.remove("hidden");
+	});
+	encTypeFile.checked = true;
+
+	const encInput = document.querySelector("#id-7F8UDU997zHchkJe9ReuJY");
+	encInput.addEventListener("change", (e) => {
+		if (e.target.files.length) {
+			let file = e.target.files[0];
+			document.querySelector("#id-5DryRV0bqXBUw7n20diSeR").innerHTML = file.name;
+			if (file.type) document.querySelector("#id-4CyNp0EFeswXChKXskAW21").innerHTML = `(${file.type})`;
+		} else {
+			document.querySelector("#id-5DryRV0bqXBUw7n20diSeR").innerHTML = "Select a file...";
+			document.querySelector("#id-4CyNp0EFeswXChKXskAW21").innerHTML = "";
+		}
+	});
+
+	const encInputKey = document.querySelector("#id-0zFVcLZadrpcvVYXEuVFfr");
+	encInputKey.addEventListener("keypress", (e) => {
+		e.stopPropagation();
+	});
+	let cryptoKey = sessionStorage.getItem("passphrase");
+	encInputKey.value = cryptoKey ? cryptoKey : "";
+
+	const encBtnDownload = document.querySelector("#id-0364PNoSTYfAf6ISL3KyJu");
+	encBtnDownload.addEventListener("click", (e) => {
+		const option = document.querySelector("input[name=encryption-type]:checked").value;
+		if (option === "file") {
+			const input = document.querySelector("#id-7F8UDU997zHchkJe9ReuJY");
+			if (!input.files.length) return;
+		} else if (option === "text") {
+			const input = document.querySelector("#id-1GGAazPdULd3PCZI3P82mG");
+			if (!input.value.length) return;
+		}
+
+		const encryptFile = (file) => new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				// let ui8a = new Uint8Array(reader.result);
+				try {
+					let wordArray = CryptoES.lib.WordArray.create(e.target.result);
+					let encrypted = CryptoES.AES.encrypt(wordArray, encInputKey.value).toString();
+					resolve(encrypted);
+				} catch (err) {
+					reject(err);
+				}
+			}
+			reader.onerror = (e) => reject(e);
+			reader.readAsArrayBuffer(file);
+		});
+		const encryptText = () => new Promise((resolve, reject) => {
+			try {
+				const inputText = document.querySelector("#id-1GGAazPdULd3PCZI3P82mG").value;
+				let encrypted = CryptoES.AES.encrypt(inputText, encInputKey.value).toString();
+				resolve(encrypted);
+			} catch (err) {
+				reject(err);
+			}
+		});
+
+		function convertWordArrayToUint8Array(wordArray) {
+			let arrayOfWords = wordArray.hasOwnProperty("words") ? wordArray.words : [];
+			let length = wordArray.hasOwnProperty("sigBytes") ? wordArray.sigBytes : arrayOfWords.length * 4;
+			let uInt8Array = new Uint8Array(length), index=0, word, i;
+			for (i=0; i<length; i++) {
+				word = arrayOfWords[i];
+				uInt8Array[index++] = word >> 24;
+				uInt8Array[index++] = (word >> 16) & 0xff;
+				uInt8Array[index++] = (word >> 8) & 0xff;
+				uInt8Array[index++] = word & 0xff;
+			}
+			return uInt8Array;
+		}
+		async function download() {
+			let result;
+			let fext = ".txt";
+			const option = document.querySelector("input[name=encryption-type]:checked").value;
+			if (option === "file") {
+				const input = document.querySelector("#id-7F8UDU997zHchkJe9ReuJY");
+				let file = input.files[0];
+				fext = (file.name.split(".").length > 1) ? `.${file.name.split(".").pop()}.txt` : ".txt";
+				result = await encryptFile(file).catch(e => Error(e));
+				if (result instanceof Error) alert(result.message);
+			} else if (option === "text") {
+				result = await encryptText();
+				if (result instanceof Error) alert(result.message);
+			} else {
+				throw new Error("Unable to encrypt the input.");
+			}
+
+			let blob = new Blob([result], { type: "text/plain; charset=utf-8" });
+			let blobUrl = URL.createObjectURL(blob);
+			let a = document.createElement("a");
+			a.href = blobUrl;
+			a.download = CryptoES.SHA256(result).toString() + fext;
+			a.click();
+			URL.revokeObjectURL(blobUrl);
+		}
+		download();
+	});
+
+	const encBtnReset = document.querySelector("#id-2UtGZGqzBpiGwwW2GzoI8J");
+	encBtnReset.addEventListener("click", e => {
+		const option = document.querySelector("input[name=encryption-type]:checked").value;
+		if (option === "file") {
+			document.querySelector("#id-7F8UDU997zHchkJe9ReuJY").value = "";
+			document.querySelector("#id-5DryRV0bqXBUw7n20diSeR").innerHTML = "Select a file...";
+			document.querySelector("#id-4CyNp0EFeswXChKXskAW21").innerHTML = "";
+		} else if (option === "text") {
+			document.querySelector("#id-1GGAazPdULd3PCZI3P82mG").value = "";
+		}
+		document.querySelector("#id-0zFVcLZadrpcvVYXEuVFfr").value = "";
+	});
+
+	// Decryption
+	let decInput = document.querySelector("#id-6Ehw6paWAhHWUgaKkkisiL");
+	decInput.addEventListener("change", (e) => {
+		if (e.target.files.length) {
+			let file = e.target.files[0];
+			document.querySelector("#id-6OJ2Dgqaw49rw8gbwAnRU8").innerHTML = file.name;
+			if (file.type) document.querySelector("#id-01oubdGbY7WsAYUE93XWKN").value = file.type;
+			else document.querySelector("#id-01oubdGbY7WsAYUE93XWKN").value = "text/plain";
+		} else {
+			document.querySelector("#id-6OJ2Dgqaw49rw8gbwAnRU8").innerHTML = "Select a file...";
+			document.querySelector("#id-0Mp75uy46srKhK4Qlh3LQT").innerHTML = "";
+		}
+	});
+	let decInputKey = document.querySelector("#id-0CxHKosuwmlxeuLYqPaKHB");
+	decInputKey.addEventListener("keypress", (e) => {
+		e.stopPropagation();
+	});
+	decInputKey.value = cryptoKey ? cryptoKey : "";
+
+	let decBtnDownload = document.querySelector("#id-7xWDBmngXOKPbzQVjVbdLc");
+	decBtnDownload.addEventListener("click", (e) => {
+		let input = document.querySelector("#id-6Ehw6paWAhHWUgaKkkisiL");
+		if (!input.files.length) return;
+		const decrypt = file => new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				let decrypted = CryptoES.AES.decrypt(e.target.result, decInputKey.value);
+				resolve(decrypted);
+			}
+			reader.onerror = (e) => reject(e);
+			reader.readAsText(file);
+		});
+		function convertWordArrayToUint8Array(wordArray) {
+			let arrayOfWords = wordArray.hasOwnProperty("words") ? wordArray.words : [];
+			let length = wordArray.hasOwnProperty("sigBytes") ? wordArray.sigBytes : arrayOfWords.length * 4;
+			let offset = 0;
+			let ui8a = new Uint8Array(length);
+			for (let i = 0; i < length; i++) {
+				ui8a[offset++] = arrayOfWords[i] >> 24;
+				ui8a[offset++] = (arrayOfWords[i] >> 16) & 0xff;
+				ui8a[offset++] = (arrayOfWords[i] >> 8) & 0xff;
+				ui8a[offset++] = arrayOfWords[i] & 0xff;
+			}
+			return ui8a;
+		}
+		async function download() {
+			let input = document.querySelector("#id-6Ehw6paWAhHWUgaKkkisiL");
+			let file = input.files[0];
+			const result = await decrypt(file).catch(e => Error(e));
+			if (result instanceof Error) alert(result.message);
+
+			let ui8a = convertWordArrayToUint8Array(result);
+			let tmp = [];
+			for (let i = 0; i < ui8a.length; i += 4)
+				tmp.push(ui8a[i] << 24 | ui8a[i + 1] << 16 | ui8a[i + 2] << 8 | ui8a[i + 3]);
+			let wordArray = CryptoES.lib.WordArray.create(tmp, ui8a.length);
+
+			let fname = CryptoES.SHA256(wordArray);
+			let fext = (file.name.split(".").length > 1) ? `.${file.name.split(".").pop()}` : "";
+			let mimeType = document.querySelector("#id-01oubdGbY7WsAYUE93XWKN").value;
+
+			let blob = new Blob([ui8a], { type: mimeType });
+			let blobUrl = URL.createObjectURL(blob);
+			let a = document.createElement("a");
+			a.href = blobUrl;
+			a.download = fname + fext;
+			a.click();
+			URL.revokeObjectURL(blobUrl);
+		}
+		download();
+	});
+
+	let decBtnReset = document.querySelector("#id-4XCryI03qtxX91UC9rgw3Y");
+	decBtnReset.addEventListener("click", e => {
+		document.querySelector("#id-6Ehw6paWAhHWUgaKkkisiL").value = "";
+		document.querySelector("#id-6OJ2Dgqaw49rw8gbwAnRU8").innerHTML = "Select a file...";
+		document.querySelector("#id-01oubdGbY7WsAYUE93XWKN").value = "";
+		document.querySelector("#id-0CxHKosuwmlxeuLYqPaKHB").value = "";
+	});
+});
+</script>
