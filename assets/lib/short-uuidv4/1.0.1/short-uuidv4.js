@@ -54,6 +54,11 @@ class Converter {
 }
 export class ShortUuidV4 {
     constructor() { }
+    static get BASE_DEF() { return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; }
+    static get BASE_BIN() { return "01"; }
+    static get BASE_OCT() { return "01234567"; }
+    static get BASE_DEC() { return "0123456789"; }
+    static get BASE_HEX() { return "0123456789abcdef"; }
     checkBase(base) {
         if ([...new Set(Array.from(base))].length !== base.length) {
             throw new Error("The given base string has duplicate characters resulting in unreliable results.");
@@ -81,9 +86,4 @@ export class ShortUuidV4 {
         return m ? [m[1], m[2], m[3], m[4], m[5]].join('-') : uuid;
     }
 }
-ShortUuidV4.BASE_DEF = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-ShortUuidV4.BASE_BIN = "01";
-ShortUuidV4.BASE_OCT = "01234567";
-ShortUuidV4.BASE_DEC = "0123456789";
-ShortUuidV4.BASE_HEX = "0123456789abcdef";
 //# sourceMappingURL=short-uuidv4.js.map
