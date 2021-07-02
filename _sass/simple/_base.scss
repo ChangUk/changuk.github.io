@@ -64,9 +64,14 @@ figcaption, caption {
 }
 figcaption::before {
 	counter-increment: fig;
-	content: "[Figure "counter(fig) "] ";
+	content: "Figure "counter(fig);
 	font-size: $small-font-size;
-	font-weight: 600;
+	font-weight: 300;
+	background: #eaeaea;
+	border-radius: 3px;
+	padding: 4px 7px;
+	margin-right: 6px;
+	color: #383838;
 }
 caption::before {
 	counter-increment: tbl;
