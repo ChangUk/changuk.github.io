@@ -28,7 +28,8 @@ body {
 	text-shadow: 0 0 0.07rem rgba(0, 0, 0, 0.3);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: auto;
-	counter-reset: page image;
+	counter-reset: page image jo hang ho;
+    background-color: #fff !important;
 }
 
 @page {
@@ -77,10 +78,6 @@ pagebreak::before {
 	}
 }
 
-body>div {
-    letter-spacing: -.5pt;
-}
-
 h1 {
 	margin-bottom: .3in;
 	font-size: 25pt;
@@ -94,6 +91,7 @@ h1 {
 
 h2 {
     margin: .6in 0 .6in 0;
+    letter-spacing: -1pt;
 	font-size: 20pt;
 	font-weight: 400;
 	text-align: center;
@@ -102,14 +100,14 @@ h2 {
 }
 
 h2::before {
-    padding-right: 5pt;
-	content: '-';
+    padding-right: 10pt;
+	content: '─';
 	font-size: 18pt;
 }
 
 h2::after {
-    padding-left: 5pt;
-	content: '-';
+    padding-left: 10pt;
+	content: '─';
 	font-size: 18pt;
 }
 
@@ -117,13 +115,16 @@ h3 {
     display: table;
 	vertical-align: top;
     line-height: 1.6;
+    letter-spacing: -1pt;
 
     margin: .6in 0 .3in 0;
 	font-size: 18pt;
 	font-weight: 400;
 	font-family: Malgun Gothic, Dotum, Gulim, sans-serif;
 }
-
+body>div:has(h3) {
+    counter-increment: jo;
+}
 h3::before {
     display: table-cell;
     position: relative;
@@ -131,7 +132,7 @@ h3::before {
     vertical-align: top;
     top: -1pt;
     
-	content: '□';
+	content: "□";
 	font-size: 18pt;
 }
 
@@ -139,6 +140,7 @@ h4 {
     display: table;
 	vertical-align: top;
     line-height: 1.6;
+    letter-spacing: -1pt;
 
     margin: .3in 0 .2in .3in;
 	font-size: 16pt;
@@ -217,7 +219,7 @@ img {
 }
 
 strong {
-	font-weight: 500;
+	font-weight: 600;
 	font-family: 'NanumBarunGothic', Dotum, Gulim, sans-serif;
 }
 
@@ -251,9 +253,30 @@ ol {
 	padding: 0;
 }
 
+body>div:has(ul) {
+    counter-reset: hang ho;
+}
+
+body>div:has(ol) {
+    counter-reset: hang ho;
+}
+
 li>ul,
 li>ol {
 	margin-top: .15in;
+}
+
+div>ol>li::before {
+    top: 4.5pt;
+    counter-increment: hang;
+    content: counter(hang)".";
+}
+
+div>*>li>ol>li::before {
+    top: 4.5pt;
+    letter-spacing: 1pt;
+    counter-increment: ho;
+    content: counter(ho)")";
 }
 
 li {
@@ -270,7 +293,7 @@ li::before {
 	display: table-cell;
 	position: relative;
 	vertical-align: top;
-	padding-right: 10pt;
+	padding-right: 8pt;
 	line-height: 1;
 }
 
@@ -300,38 +323,34 @@ body>div>ul>li::before {
 	font-size: 9pt;
 }
 
-body>div>ul>li:not(:last-child)::after {
-	display: table-row;
+body>div>*>li:not(:last-child)::after {
+	display: table;
 	content: ' ';
 	height: .3in !important;
 }
 
-body>div>ul>li>ul>li {
+body>div>*>li>ul>li {
 	font-family: 'cdot', 'Chosunilbo_myungjo', 'Segoe UI', sans-serif;
 }
 
-body>div>ul>li>ul>li::before {
+body>div>*>li>ul>li::before {
 	top: 7pt;
 	content: '­­―';
 	font-size: 8pt;
 }
 
-body>div>ul>li>ul>li>ul>li {
-	font-family: Gulim, 'Segoe UI', sans-serif;
+body>div>*>li>*>li>*>li {
+	font-family: 'Segoe UI', sans-serif;
 	font-size: 13pt;
+    font-weight: 300;
+    letter-spacing: -1pt;
 }
 
-body>div>ul>li>ul>li>ul>li::before {
-	top: 4pt;
+body>div>*>li>*>li>*>li::before {
+	top: 2pt;
 	content: '⁎';
-	font-size: 11pt;
+	font-size: 13pt;
 	font-weight: 300;
-}
-
-body>div>ul>li>ul>li>ul>li>ul>li {
-}
-
-body>div>ul>li>ul>li>ul>li>ul>li::before {
 }
 
 table {
