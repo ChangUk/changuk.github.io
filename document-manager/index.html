@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document Collection Demo</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+
+	<body>
+		<h1 id="demo-title"></h1>
+		<div id="container">
+			<fieldset>
+				<legend>Create</legend>
+				<input id="document-id" type="text" />
+				<textarea id="editor"></textarea>
+				<button id="btn-newid">Generate New ID</button> <button id="btn-template">Template</button>
+				<button id="btn-create">Create</button>
+			</fieldset>
+			<fieldset>
+				<legend>Delete</legend>
+			</fieldset>
+			<fieldset>
+				<legend id="demo-search"></legend>
+				<input id="search-input" type="text" value="data_modeling" />
+				<div id="search-result"></div>
+			</fieldset>
+			<fieldset>
+				<legend>Viewer</legend>
+				<pre id="viewer"></pre>
+			</fieldset>
+		</div>
+
+		<!-- Main script for modern browser -->
+		<script type="module" src="index.js"></script>
+
+		<!-- Main script for IE11 -->
+		<script
+			nomodule
+			src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2Ces2016%2Ces2017&flags=always"
+		></script>
+		<script nomodule src="./lib/document-manager-1.0.0.umd.min.js"></script>
+		<script nomodule src="index-ie11.js"></script>
+	</body>
+</html>

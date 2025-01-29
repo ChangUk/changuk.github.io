@@ -1,0 +1,152 @@
+---
+layout: default
+permalink: /function/uuidv4/
+---
+
+<div>
+	<div class="post-header">
+		<h1 class="post-title">Generate UUIDv4</h1>
+		<div class="post-meta">
+			<div class="post-meta-description">Generate and/or translate UUIDv4 string.</div>
+		</div>
+	</div>
+	<div class="post-content">
+		<h2>Generate New UUIDv4</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="right header fit-width">Options:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="checkbox" id="id-3x3Re1nkGwuVwOrSfpKIbR" checked />
+						<label for="id-3x3Re1nkGwuVwOrSfpKIbR" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">Shorten</label>
+						<input type="checkbox" id="id-2LYTr6gCYGGbpqbfRuMVPc" checked disabled />
+						<label for="id-2LYTr6gCYGGbpqbfRuMVPc" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">Remove Dashes</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">UUID:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="id-7vYyKFUTdhQpHX8wOawyxO" style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;" readonly>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="id-4q4SJSP8tOrjWp3zfKNGK8">Generate New</button>
+						<button id="id-1AWISRxH4N3KHdWUMwJqTd">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2>Translation</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="right header fit-width">Options:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="radio" id="id-1SSocuwrN7FgzHdhSFqUBW" name="translation" value="def-to-hex" checked />
+						<label for="id-1SSocuwrN7FgzHdhSFqUBW" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">Shortened to HEX</label>
+						<input type="radio" id="id-0JqNNzoOXIqH81rgQcxVm5" name="translation" value="hex-to-def" />
+						<label for="id-0JqNNzoOXIqH81rgQcxVm5" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">HEX to Shortened</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">UUID:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="id-41JNfoLbcVjGgvxOLTuZR4" placeholder="Input UUID string..." style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;">
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Translated:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="id-3j7nkxcrf7DPx6NGHVnMkB" style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;" readonly>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="id-7lg7m0gO0fAx2fDNGqTNRI">Translate</button>
+						<button id="id-4wUoebaIZV6Yehqoq8FPQL">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="module">
+import("/assets/lib/short-uuidv4/1.0.1/short-uuidv4.js")
+.then((mod) => {
+	let ShortUuidV4 = mod.ShortUuidV4;
+	let generator = new ShortUuidV4();
+
+	let optionShorten = document.querySelector("#id-3x3Re1nkGwuVwOrSfpKIbR");
+	optionShorten.addEventListener("change", (e) => {
+		let optionRemoveDashes = document.querySelector("#id-2LYTr6gCYGGbpqbfRuMVPc");
+		optionRemoveDashes.disabled = e.target.checked;
+	});
+
+	let outputGen = document.querySelector("#id-7vYyKFUTdhQpHX8wOawyxO");
+	outputGen.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+
+	let btnGenerateNew = document.querySelector("#id-4q4SJSP8tOrjWp3zfKNGK8");
+	btnGenerateNew.addEventListener("click", (e) => {
+		let uuid = generator.new();
+		let optionShorten = document.querySelector("#id-3x3Re1nkGwuVwOrSfpKIbR").checked;
+		let optionRemoveDashes = document.querySelector("#id-2LYTr6gCYGGbpqbfRuMVPc").checked;
+		if (optionShorten) {
+			outputGen.value = uuid;
+		} else {
+			uuid = generator.translate(uuid);
+			outputGen.value = optionRemoveDashes ? uuid.replace(/-/g, '') : uuid;
+		}
+	});
+	btnGenerateNew.click();
+
+	let btnResetGen = document.querySelector("#id-1AWISRxH4N3KHdWUMwJqTd");
+	btnResetGen.addEventListener("click", (e) => {
+		outputGen.value = "";
+	});
+
+	let inputTrans = document.querySelector("#id-41JNfoLbcVjGgvxOLTuZR4");
+	inputTrans.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+	inputTrans.addEventListener("keypress", e => {
+		e.stopPropagation();
+	});
+	let outputTrans = document.querySelector("#id-3j7nkxcrf7DPx6NGHVnMkB");
+	outputTrans.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+
+	let btnTranslate = document.querySelector("#id-7lg7m0gO0fAx2fDNGqTNRI");
+	btnTranslate.addEventListener("click", (e) => {
+		let option = document.querySelector("input[name=translation]:checked").value;
+		let input = document.querySelector("#id-41JNfoLbcVjGgvxOLTuZR4");
+		let output = document.querySelector("#id-3j7nkxcrf7DPx6NGHVnMkB");
+		let uuid = input.value.replace(/-/g, '');
+		if (option === "def-to-hex") {
+			if (uuid.length === 22)
+				output.value = generator.translate(uuid, ShortUuidV4.BASE_DEF, ShortUuidV4.BASE_HEX);
+			else
+				output.value = "Invalid input format!";
+		} else if (option === "hex-to-def") {
+			if (uuid.length === 32)
+				output.value = generator.translate(uuid, ShortUuidV4.BASE_HEX, ShortUuidV4.BASE_DEF);
+			else
+				output.value = "Invalid input format!";
+		}
+	});
+
+	let btnResetTrans = document.querySelector("#id-4wUoebaIZV6Yehqoq8FPQL");
+	btnResetTrans.addEventListener("click", (e) => {
+		inputTrans.value = "";
+		outputTrans.value = "";
+	});
+}).catch(e => {
+	console.error(e);
+});
+</script>

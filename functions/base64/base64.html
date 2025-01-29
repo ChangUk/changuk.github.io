@@ -1,0 +1,119 @@
+---
+layout: default
+permalink: /function/base64/
+---
+
+<div>
+	<div class="post-header">
+		<h1 class="post-title">Base64</h1>
+		<div class="post-meta">
+			<div class="post-meta-description">Generate Base64 string of the given file.</div>
+		</div>
+	</div>
+	<div class="post-content">
+		<h2 id="file">File</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="right header fit-width">Input:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="file" id="id-536HnfP55HRWBTrQkZPmBh" class="hidden" />
+						<label id="id-45Jslq1hMQkRwsZ2RcGcMz" for="id-536HnfP55HRWBTrQkZPmBh" class="button">Select a file...</label>
+						<span id="id-6MHbT8SDZ4T0F7crGpotf5" style="margin-left: 5px; font-size: .9rem;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Output:<br />(Base64)</td>
+					<td style="padding: 0; font-size: 0; background: #fff;">
+						<textarea id="id-6VOCFXad8bJzoc1p6GhJyR" style="width: 100%; height: 400px; overflow-y: scroll; resize: none; border: none; box-sizing: border-box; font-size: 1rem; word-break: break-all;" readonly></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Length:</td>
+					<td style="padding: 0; font-size: 0; background: #fff;">
+						<input type="text" id="id-0skLTfspEKnmip059ZEOQ6" style="padding: 7px; width: 100%; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;" readonly />
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="id-2ZYfZbWrRdvMmn2XOlPriu">View Base64</button>
+						<button id="id-0xtKYeZWDb6mXOAeO8Bc9w">Download Base64 as File</button>
+						<button id="id-2Zk63wlKQroGFd5FeXOc5q">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="module">
+let input = document.querySelector("#id-536HnfP55HRWBTrQkZPmBh");
+input.addEventListener("change", (e) => {
+	if (e.target.files.length) {
+		var file = e.target.files[0];
+		document.querySelector("#id-45Jslq1hMQkRwsZ2RcGcMz").innerHTML = file.name;
+		if (file.type) document.querySelector("#id-6MHbT8SDZ4T0F7crGpotf5").innerHTML = "(" + file.type + ")";
+	} else {
+		document.querySelector("#id-45Jslq1hMQkRwsZ2RcGcMz").innerHTML = "Select a file...";
+		document.querySelector("#id-6MHbT8SDZ4T0F7crGpotf5").innerHTML = "";
+	}
+});
+
+let btnView = document.querySelector("#id-2ZYfZbWrRdvMmn2XOlPriu");
+btnView.addEventListener("click", (e) => {
+	var input = document.querySelector("#id-536HnfP55HRWBTrQkZPmBh");
+	if (!input.files.length) return;
+	const toBase64 = file => new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+	});
+	async function viewData() {
+		var input = document.querySelector("#id-536HnfP55HRWBTrQkZPmBh");
+		var file = input.files[0];
+		const result = await toBase64(file).catch(e => Error(e));
+		if (result instanceof Error) alert(result.message);
+		document.querySelector("#id-6VOCFXad8bJzoc1p6GhJyR").value = result;
+		document.querySelector("#id-0skLTfspEKnmip059ZEOQ6").value = `${result.length.toLocaleString()} bytes (${Math.ceil(result.length/1024).toLocaleString()} Kbytes)`;
+	}
+	viewData();
+});
+
+let btnDownload = document.querySelector("#id-0xtKYeZWDb6mXOAeO8Bc9w");
+btnDownload.addEventListener("click", (e) => {
+	var input = document.querySelector("#id-536HnfP55HRWBTrQkZPmBh");
+	if (!input.files.length) return;
+	const toBase64 = file => new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+	});
+	async function download() {
+		var input = document.querySelector("#id-536HnfP55HRWBTrQkZPmBh");
+		var file = input.files[0];
+		const result = await toBase64(file).catch(e => Error(e));
+		if (result instanceof Error) alert(result.message);
+
+		var blob = new Blob([result], { type: "text/plain; charset=utf-8" });
+		var blobUrl = URL.createObjectURL(blob);
+		var a = document.createElement("a");
+		a.href = blobUrl;
+		a.download = file.name.replace(/\.[^.]+$/, ".txt");
+		a.click();
+		URL.revokeObjectURL(blobUrl);
+	}
+	download();
+});
+
+let btnReset = document.querySelector("#id-2Zk63wlKQroGFd5FeXOc5q");
+btnReset.addEventListener("click", (e) => {
+	document.querySelector("#id-536HnfP55HRWBTrQkZPmBh").value = "";
+	document.querySelector("#id-45Jslq1hMQkRwsZ2RcGcMz").innerHTML = "Select a file...";
+	document.querySelector("#id-6MHbT8SDZ4T0F7crGpotf5").innerHTML = "";
+	document.querySelector("#id-6VOCFXad8bJzoc1p6GhJyR").value = "";
+	document.querySelector("#id-0skLTfspEKnmip059ZEOQ6").value = "";
+});
+</script>

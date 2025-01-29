@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<head>
+
+	{%- include head.html -%}
+
+</head>
+<body>
+
+	<header>
+	
+		{%- include header.html -%}
+
+	</header>
+
+	<content>
+		
+		<div class="wrapper">
+
+			<div id="overlay-sidebar"></div>
+
+			<div id="content-wrapper">{{ content }}</div>
+
+			<div id="search-result-wrapper" class="page-content hidden">
+
+				<template id="search-result-template">
+					<li>
+						<div class="post-meta">
+							<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{date}</time>{category}
+						</div>
+						<h3><a class="post-link" href="{url}">{title}</a></h3>
+					</li>
+				</template>
+
+				<ul id="search-result" class="post-list"></ul>
+
+			</div>
+			
+		</div>
+
+	</content>
+
+	<footer>
+	
+		{%- include footer.html -%}
+
+	</footer>
+
+</body>
+</html>

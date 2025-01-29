@@ -1,0 +1,62 @@
+@charset "utf-8";
+
+@font-face {
+  font-family: 'Chosunilbo_myungjo';
+  src: url('/assets/font/Chosunilbo_myungjo.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+// Define defaults for each variable.
+
+$base-font-family: "Chosunilbo_myungjo", "Segoe UI", Helvetica, Arial, sans-serif, "Segoe UI Symbol" !default;
+$base-font-size:   16px !default;
+$base-font-weight: 400 !default;
+$small-font-size:  $base-font-size * 0.875 !default;
+$base-line-height: 1.6 !default;
+
+$spacing-unit:     1.6em !default;
+
+$text-color:       #383838 !default;
+$background-color: #f7f7f7 !default;
+$hover-color:      whitesmoke !default;
+
+$blue:             #005b99 !default;
+$blue-light:       #0072bf !default;
+$red:              #ee6150 !default;
+$green:            #58be5b !default;
+$yellow:           #fdd800 !default;
+$gray:             #828282 !default;
+$gray-light:         lighten($gray, 40%) !default;
+$gray-dark:          darken($gray, 25%) !default;
+
+$table-text-align: left !default;
+
+// Width of the content area
+$content-width:    1200px !default;
+$on-laptop:        720px !default;
+
+// Use media queries like this:
+// @include media-query($on-palm) {
+//   .wrapper {
+//     padding-right: $spacing-unit / 2;
+//     padding-left: $spacing-unit / 2;
+//   }
+// }
+@mixin media-query($device) {
+  @media screen and (max-width: $device) {
+    @content;
+  }
+}
+
+@mixin relative-font-size($ratio) {
+  font-size: $base-font-size * $ratio;
+}
+
+// Import partials.
+@import
+  "simple/base",
+  "simple/layout",
+  //"simple/syntax-highlighting"
+  "pygments-themes/tomorrow-night"
+;

@@ -1,0 +1,36 @@
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+	<meta name="description" content="{{ site.description }}">
+
+	<!-- WebFont Load Optimization -->
+	<link rel="preload" as="font" href="/assets/font/Chosunilbo_myungjo.woff" type="font/woff2" crossorigin="anonymous">
+
+	<!-- Stylesheet -->
+	<link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}" />
+	<link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}" />
+
+	<!-- KaTeX -->
+	<link rel="stylesheet" href="{{ "/assets/lib/katex/0.12.0/katex.min.css" | relative_url }}" />
+
+	<!-- Raphael.js -->
+	<script src="{{ "/assets/lib/raphael/2.3.0/raphael.min.js" | relative_url }}"></script>
+
+	<!-- Sequence diagram -->
+	<link rel="stylesheet" href="{{ "/assets/lib/js-sequence-diagram/2.0.1/sequence-diagram-min.css" | relative_url }}" />
+	<script src="{{ "/assets/lib/webfont/1.6.6/webfont.js" | relative_url }}"></script>
+	<script src="{{ "/assets/lib/underscore/1.12.0/underscore-min.js" | relative_url }}"></script>
+	<script src="{{ "/assets/lib/js-sequence-diagram/2.0.1/sequence-diagram-min.js" | relative_url }}"></script>
+
+	<!-- Flowchart -->
+	<script src="{{ "/assets/lib/flowchart/1.15.0/flowchart.min.js" | relative_url }}"></script>
+	<script src="{{ "/assets/lib/flowchart/1.15.0/options.js" | relative_url }}"></script>
+
+	<!-- Require.js -->
+	<script src="{{ "/assets/lib/require/2.3.6/require.min.js" | relative_url }}"></script>
+
+	<!-- Main scripts -->
+	<script type="module" src="{{ "/assets/lib/simple-jekyll-search/search.mjs" | relative_url }}"></script>
+	<script type="module" src="{{ "/assets/main.mjs" | relative_url }}"></script>

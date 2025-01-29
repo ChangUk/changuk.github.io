@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<head>
+
+	{%- include head.html -%}
+
+	<!-- Highlight -->
+	<link rel="stylesheet" href="{{ "/assets/lib/highlight/10.7.2/styles/darcula.css" | relative_url }}" />
+	<script src="{{ "/assets/lib/highlight/10.7.2/highlight.pack.js" | relative_url }}"></script>
+
+	<!-- Private -->
+	<link rel="stylesheet" href="{{ "/assets/lib/sectional/sectional.css" | relative_url }}" />
+	<script type="module" src="{{ "/private/private.mjs" | relative_url }}"></script>
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="{{ "/private/private.css" | relative_url }}" />
+</head>
+<body>
+
+	<header>
+
+		{%- include header.html -%}
+
+	</header>
+
+	<content>
+
+		<div class="wrapper">
+
+			<div id="overlay-loading">
+				<div class="loader">
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+					<span class="loader-item"></span>
+				</div>
+			</div>
+
+			<div id="overlay-sidebar"></div>
+
+			<div id="content-wrapper">
+
+				<div id="private-forbidden" class="container hidden">
+
+					<div class="errcode">401</div>
+					<p><b>Page unauthorized :(</b></p>
+					<p>You don't have permission to access this page.</p>
+					<input id="input-passphrase" type="password" spellcheck="false" placeholder="passphrase" autofocus />
+					<div id="auth-message"></div>
+
+				</div>
+
+				<aside class="hidden">
+
+					<div id="toc"></div>
+	
+					<div id="private-manager">
+						<div id="private-manager-header">
+							<div id="private-manager-menu">
+								<button id="id-1NAFGkLR4TXDd24jmOS6NH">Inspect</button>
+								<button id="id-3rTZdFdxjcWXsrIpFFkaTj">Export</button>
+							</div>
+						</div>
+						<fieldset>
+							<legend>Entity Editor</legend>
+							<div>
+								<label for="id-2iB1fu5I8X0uE71RUNXjkV">Entity ID: </label>
+								<input id="id-2iB1fu5I8X0uE71RUNXjkV" type="text" autocomplete="off" maxlength=22 />
+							</div>
+							<div>
+								<label for="id-1ilMellLqQg27kkGPQVFmG">Entity: </label>
+								<textarea id="id-1ilMellLqQg27kkGPQVFmG" wrap="off" style="min-height: 250px;"></textarea>
+								<input type="checkbox" id="id-6SPsMZVMeMkxjleU85vY0X" style="position: relative; top: 2px; display: inline-block;" checked /><!--
+								--><label for="id-6SPsMZVMeMkxjleU85vY0X" style="display: inline-block; user-select: none;">Parents are affected by changes</label>
+								<div class="private-manager-control-wrapper">
+									<button id="id-3F5CVe3tnFadXKSNxNDJYA" style="margin-left: auto;">Reset</button>
+									<button id="id-0W4rZ284okFhNi3wEwsRdO">New ID</button>
+									<button id="id-2QEfF3VjOq5mStkqEMaFRO">Save</button>
+									<button id="id-1Q5TS3PdxDME4YF92Rayl0"><del>Remove</del></button>
+								</div>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>Entity Template</legend>
+							<div>
+								<label for="id-6kYDDAzRbke7m1Rb1Rvqkp">Entity Type: </label>
+								<input id="id-6kYDDAzRbke7m1Rb1Rvqkp" type="text" autocomplete="off" list="id-00q3kS1yS9sr0REdzzkDlw" />
+								<datalist id="id-00q3kS1yS9sr0REdzzkDlw"></datalist>
+							</div>
+							<div>
+								<label for="id-1Stir8sO6QnPpV8xcyimeG">Template: </label>
+								<textarea id="id-1Stir8sO6QnPpV8xcyimeG" wrap="off" style="min-height: 180px;"></textarea>
+								<div class="private-manager-control-wrapper">
+									<button id="id-3597Oai8C2I4bKXVQShv50" style="margin-left: auto;">Reset</button>
+									<button id="id-5sBvAZMWtngtuHx0SPEwKM">Copy</button>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+
+				</aside>
+
+				<main class="layout-post page-content" aria-label="Content">
+					
+					{{ content }}
+				
+				</main>
+
+			</div>
+
+			<div id="search-result-wrapper" class="page-content hidden">
+
+				<template id="search-result-template">
+					<li>
+						<div class="post-meta">
+							<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{date}</time>{category}
+						</div>
+						<h3><a class="post-link" href="{url}">{title}</a></h3>
+					</li>
+				</template>
+
+				<ul id="search-result" class="post-list"></ul>
+
+			</div>
+			
+		</div>
+
+	</content>
+
+	<footer>
+
+		{%- include footer.html -%}
+
+	</footer>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+---
+layout: default
+permalink: /function/hash/
+---
+
+<div>
+	<div class="post-header">
+		<h1 class="post-title">Hash</h1>
+		<div class="post-meta">
+			<div class="post-meta-description">Get hash value for the given data.</div>
+		</div>
+	</div>
+	<div class="post-content">
+		<h2 id="file">File</h2>
+		<table>
+			<tbody>
+				<tr>
+					<td class="right header fit-width">Input:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="file" id="id-5MZix6jbNNQ8UzC7MSKPTp" class="hidden" />
+						<label id="id-5P3lh5a5q8bTQdIlYhGQOT" for="id-5MZix6jbNNQ8UzC7MSKPTp" class="button">Select a file...</label>
+						<span id="id-6G3o0hWydMjQZYdOfGhVT6" style="margin-left: 5px; font-size: .9rem;"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Option:</td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<input type="radio" id="id-3eLpSsEaAxaBby6v0FlOoC-md5" name="2pFaPa7AZzZmAuSuOmePN2" value="md5" />
+						<label for="id-3eLpSsEaAxaBby6v0FlOoC-md5" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">MD5</label>
+						<input type="radio" id="id-3eLpSsEaAxaBby6v0FlOoC-sha1" name="2pFaPa7AZzZmAuSuOmePN2" value="sha1" />
+						<label for="id-3eLpSsEaAxaBby6v0FlOoC-sha1" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">SHA-1</label>
+						<input type="radio" id="id-3eLpSsEaAxaBby6v0FlOoC-sha224" name="2pFaPa7AZzZmAuSuOmePN2" value="sha224" />
+						<label for="id-3eLpSsEaAxaBby6v0FlOoC-sha224" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">SHA-224</label>
+						<input type="radio" id="id-3eLpSsEaAxaBby6v0FlOoC-sha256" name="2pFaPa7AZzZmAuSuOmePN2" value="sha256" checked />
+						<label for="id-3eLpSsEaAxaBby6v0FlOoC-sha256" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">SHA-256</label>
+						<input type="radio" id="id-3eLpSsEaAxaBby6v0FlOoC-sha512" name="2pFaPa7AZzZmAuSuOmePN2" value="sha512" />
+						<label for="id-3eLpSsEaAxaBby6v0FlOoC-sha512" style="margin: 0 20px 0 3px; font-size: 16px; line-height: 19px; user-select: none;">SHA-512</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width">Hash Value:</td>
+					<td style="padding: 0 3px; background: #fff;">
+						<input type="text" id="id-0zFVcLZadrpcvVYXEuVFfr" style="padding: 7px; width: 100%; font-family: consolas; font-size: 1rem; line-height: 1; border: none; box-sizing: border-box;" readonly />
+					</td>
+				</tr>
+				<tr>
+					<td class="right header fit-width"></td>
+					<td style="padding: 5px; font-size: 0; background: #fff;">
+						<button id="id-2Ri986bd1tNnnlKveKjFmd">Get Hash</button>
+						<button id="id-2ayIa0FrUqpyOYHpv1kckM">Reset</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script type="module">
+import("/assets/lib/crypto-es/1.2.6/index.js").then((mod) => {
+	let CryptoES = mod.default;
+
+	let fileInput = document.querySelector("#id-5MZix6jbNNQ8UzC7MSKPTp");
+	fileInput.addEventListener("change", (e) => {
+		if (e.target.files.length) {
+			let file = e.target.files[0];
+			document.querySelector("#id-5P3lh5a5q8bTQdIlYhGQOT").innerHTML = file.name;
+			if (file.type) document.querySelector("#id-6G3o0hWydMjQZYdOfGhVT6").innerHTML = `(${file.type})`;
+		} else {
+			document.querySelector("#id-5P3lh5a5q8bTQdIlYhGQOT").innerHTML = "Select a file...";
+			document.querySelector("#id-6G3o0hWydMjQZYdOfGhVT6").innerHTML = "";
+		}
+	});
+	let fileOutput = document.querySelector("#id-0zFVcLZadrpcvVYXEuVFfr");
+	fileOutput.addEventListener("focus", (e) => {
+		e.target.setSelectionRange(0, e.target.value.length);
+	});
+	let btnFileHash = document.querySelector("#id-2Ri986bd1tNnnlKveKjFmd");
+	btnFileHash.addEventListener("click", (e) => {
+		let input = document.querySelector("#id-5MZix6jbNNQ8UzC7MSKPTp");
+		if (!input.files || !input.files.length) return;
+		let reader = new FileReader();
+		reader.onload = (file => {
+			return function (evt) {
+				let ui8a = new Uint8Array(evt.target.result);
+				let tmp = [];
+				for (let i = 0; i < ui8a.length; i += 4)
+					tmp.push(ui8a[i] << 24 | ui8a[i + 1] << 16 | ui8a[i + 2] << 8 | ui8a[i + 3]);
+				let wordArray = CryptoES.lib.WordArray.create(tmp, ui8a.length);
+
+				let output = document.querySelector("#id-0zFVcLZadrpcvVYXEuVFfr");
+				let option = document.querySelector(`input[name="2pFaPa7AZzZmAuSuOmePN2"]:checked`).value;
+				if (option == "md5") output.value = CryptoES.MD5(wordArray);
+				else if (option == "sha1") output.value = CryptoES.SHA1(wordArray);
+				else if (option == "sha224") output.value = CryptoES.SHA224(wordArray);
+				else if (option == "sha256") output.value = CryptoES.SHA256(wordArray);
+				else if (option == "sha512") output.value = CryptoES.SHA512(wordArray);
+			};
+		})(input.files[0]);
+		reader.readAsArrayBuffer(input.files[0]);
+	});
+	let btnFileReset = document.querySelector("#id-2ayIa0FrUqpyOYHpv1kckM");
+	btnFileReset.addEventListener("click", e => {
+		document.querySelector("#id-5MZix6jbNNQ8UzC7MSKPTp").value = "";
+		document.querySelector("#id-5P3lh5a5q8bTQdIlYhGQOT").innerHTML = "Select a file...";
+		document.querySelector("#id-6G3o0hWydMjQZYdOfGhVT6").innerHTML = "";
+		document.querySelector("#id-0zFVcLZadrpcvVYXEuVFfr").value = "";
+	});
+});
+</script>
